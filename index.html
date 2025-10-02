@@ -1262,6 +1262,17 @@ Hãy đảm bảo bạn tuân thủ đúng định dạng JSON đã yêu cầu.`
                                 <div>
                                     ${isScript 
                                         ? `<a href="/S2Se/index.html" id="auto-s2se-btn" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-3 text-sm rounded-md">Chuyển sang S2Se</a>`
+// Sự kiện chuyển nội dung sang S2Se
+document.addEventListener('DOMContentLoaded', function() {
+    document.body.addEventListener('click', function(e) {
+        if (e.target && e.target.id === 'auto-s2se-btn') {
+            e.preventDefault();
+            var content = document.getElementById('script-result-content')?.value;
+            if (content) localStorage.setItem('scriptToProcess', content);
+            window.location.href = '/S2Se/index.html';
+        }
+    });
+});
 document.body.addEventListener('click', function(e) {
     if (e.target && e.target.id === 'auto-s2se-btn') {
         e.preventDefault();
