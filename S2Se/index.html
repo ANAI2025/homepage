@@ -1109,6 +1109,53 @@
 </body>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Xử lý nút tạo mới bộ nhớ
+    var memoryNewItemBtn = document.getElementById('memory-new-item-btn');
+    var memoryEditorPanel = document.getElementById('memory-editor-panel');
+    var memoryModalForm = document.getElementById('memory-modal-form');
+    var memoryModalTitleInput = document.getElementById('memory-modal-title-input');
+    var memoryModalContentInput = document.getElementById('memory-modal-content-input');
+    var lastType = '';
+    if (memoryNewItemBtn && memoryEditorPanel && memoryModalForm) {
+        memoryNewItemBtn.addEventListener('click', function() {
+            memoryEditorPanel.classList.remove('hidden');
+            memoryModalTitleInput.value = '';
+            memoryModalContentInput.value = '';
+        });
+        memoryModalForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            var title = memoryModalTitleInput.value.trim();
+            var content = memoryModalContentInput.value.trim();
+            if (!title || !content) return;
+            var items = getSharedMemory(lastType);
+            items.push({ id: Date.now(), title: title, content: content });
+            // Lưu lại vào localStorage
+            var key = '';
+            switch(lastType) {
+                case 'script':
+                case 'mainScripts': key = 'scripts'; break;
+                case 'sections': key = 'sections'; break;
+                case 'prompt':
+                case 'mainPrompts': key = 'prompts'; break;
+                case 'voiceOver':
+                case 'mainVoiceOvers': key = 'voiceOvers'; break;
+                case 'scenes': key = 'scenes'; break;
+                case 'characters': key = 'characters'; break;
+                case 'trash': key = 'trash'; break;
+                default: key = lastType;
+            }
+            localStorage.setItem(key, JSON.stringify(items));
+            memoryEditorPanel.classList.add('hidden');
+            // Cập nhật lại danh sách
+            var listCol = document.getElementById('memory-modal-list');
+            if (listCol) {
+                listCol.innerHTML = '';
+                items.forEach(function(item) {
+                    listCol.innerHTML += `<div class='script-item'><span>${item.title || item.name || 'Không tiêu đề'}</span></div>`;
+                });
+            }
+        });
+    }
     // Hàm lấy dữ liệu bộ nhớ dùng chung
     function getSharedMemory(type) {
         switch(type) {
@@ -1130,6 +1177,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.memory-btn').forEach(function(btn) {
         btn.addEventListener('click', function(e) {
             var type = btn.getAttribute('data-type');
+            lastType = type;
             var modal = document.getElementById('memory-modal-container');
             var title = '';
             switch(type) {
@@ -1161,6 +1209,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         });
                     }
                 }
+                // Ẩn form nhập khi mở modal mới
+                if (memoryEditorPanel) memoryEditorPanel.classList.add('hidden');
             }
         });
     });
