@@ -21,12 +21,29 @@
     </style>
 </head>
 <body class="bg-gray-900 text-white h-screen flex flex-col p-8">
+
+    <div style="position:fixed;left:24px;bottom:24px;z-index:40;pointer-events:auto;">
+        <div style="display:flex;align-items:center;gap:8px;">
+            <a href="/homepage/index.html" id="go-back-btn" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-md flex items-center shadow-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                </svg>
+                Quay lại
+            </a>
+            <a href="/homepage/index.html" id="back-home-btn" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-md flex items-center shadow-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 12h18M3 12l6-6m-6 6l6 6" />
+                </svg>
+                Trang chủ
+            </a>
+        </div>
+    </div>
     <header class="flex justify-between items-center mb-6 flex-shrink-0">
         <h1 class="text-3xl font-bold">Bộ nhớ Nhân vật</h1>
     </header>
     <main class="bg-gray-800 p-6 rounded-lg w-full h-full flex flex-col shadow-2xl">
     <div class="flex space-x-6 flex-grow overflow-hidden" style="height:700px;min-height:700px;max-height:700px;">
-            <div style="width:220px;min-width:220px;max-width:220px;" class="border-r border-gray-700 pr-4 flex flex-col">
+            <div style="width:420px;min-width:420px;max-width:600px;" class="border-r border-gray-700 pr-4 flex flex-col">
                 <div class="flex-shrink-0 flex justify-between items-center mb-4">
                     <h3 class="font-bold text-lg">Danh sách Nhân vật</h3>
                     <div class="flex space-x-2">
@@ -42,7 +59,7 @@
                         </button>
                     </div>
                 </div>
-                <div id="item-list" class="space-y-2 overflow-y-auto flex-grow pr-2" style="width:40px;min-width:40px;max-width:40px;"></div>
+                <div id="item-list" class="space-y-2 overflow-y-auto flex-grow pr-2" style="width:400px;min-width:400px;max-width:400px;"></div>
             </div>
             <div id="editor-panel" class="flex-1 hidden flex-col">
                 <form id="item-form" class="space-y-4 flex flex-col flex-grow" style="height:100%;width:100%;">
@@ -187,7 +204,6 @@
                 }
                 saveData();
                 renderItemList();
-                alert('Đã lưu nhân vật!');
             });
             const editItemBtn = document.getElementById('edit-item-btn');
             editItemBtn.addEventListener('click', () => {
@@ -198,19 +214,14 @@
             const copyItemBtn = document.getElementById('copy-item-btn');
             copyItemBtn.addEventListener('click', () => {
                 const contentToCopy = itemContentInput.value;
-                if (!contentToCopy) {
-                    alert('Không có nội dung để sao chép.');
-                    return;
-                }
-                navigator.clipboard.writeText(contentToCopy).then(() => {
-                    alert('Đã sao chép vào clipboard!');
-                }).catch(err => alert('Sao chép thất bại!'));
+                if (!contentToCopy) return;
+                navigator.clipboard.writeText(contentToCopy);
             });
             const exportTxtBtn = document.getElementById('export-txt-btn');
             exportTxtBtn.addEventListener('click', () => {
                 const title = itemTitleInput.value.trim();
                 const content = itemContentInput.value.trim();
-                if (!title && !content) return alert('Không có nội dung để xuất.');
+                if (!title && !content) return;
                 const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
                 const url = URL.createObjectURL(blob);
                 const link = document.createElement('a');
