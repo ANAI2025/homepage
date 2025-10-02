@@ -42,12 +42,12 @@
     <!-- Nút Trang chủ cố định, nhưng nằm ngoài vùng main để không đè lên các nút chức năng -->
     <div style="position:fixed;left:24px;bottom:24px;z-index:40;pointer-events:auto;">
         <div style="display:flex;align-items:center;gap:8px;">
-            <button type="button" id="go-back-btn" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-md flex items-center shadow-lg">
+            <a href="/homepage/index.html" id="go-back-btn" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-md flex items-center shadow-lg">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
                 </svg>
                 Quay lại
-            </button>
+            </a>
             <a href="/homepage/index.html" id="back-home-btn" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-md flex items-center shadow-lg">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M3 12h18M3 12l6-6m-6 6l6 6" />
@@ -121,12 +121,7 @@
     <script>
         // Nút quay lại trang chủ và nút đóng cửa sổ
         document.addEventListener('DOMContentLoaded', function() {
-            const goBackBtn = document.getElementById('go-back-btn');
-            if (goBackBtn) {
-                goBackBtn.addEventListener('click', function() {
-                    window.history.back();
-                });
-            }
+            // Nút Quay lại giờ là link, không cần JS
             const closeMainBtn = document.getElementById('close-main-btn');
             if (closeMainBtn) {
                 closeMainBtn.addEventListener('click', function() {
