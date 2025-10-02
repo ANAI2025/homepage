@@ -226,62 +226,75 @@
         <!-- Xóa luôn thanh ngang taskbar -->
         <!-- Đã xóa nút quay về trang chủ phía dưới dòng Script -->
         <main class="flex-grow p-4 flex flex-row space-x-4 overflow-y-hidden relative">
-            <div id="input-panel" class="workspace-column w-[400px] flex-shrink-0 bg-gray-800 p-6 rounded-lg">
-                <form id="script-form" class="space-y-4">
-                    <div>
-                        <label for="script-idea" class="block text-sm font-medium text-gray-300">Ý tưởng kịch bản / Tóm tắt (Tùy chọn)</label>
-                        <textarea id="script-idea" rows="4" class="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-yellow-500"></textarea>
+            <div id="input-panel" class="w-1/6 flex-shrink-0 bg-gray-800 p-1 rounded-lg flex flex-col panel-shadow">
+                <!-- Script Header -->
+                <div class="flex-shrink-0 mb-1">
+                    <h2 class="text-sm font-bold mb-1 leading-tight">Kịch bản gốc</h2>
+                    <label for="s2se-input-script" class="block text-xs font-medium text-blue-400 leading-tight mb-1">Chọn từ Bộ nhớ Scripts...</label>
+                    <select id="s2se-input-script" class="mt-1 block w-full px-1 py-1 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 text-xs leading-tight" placeholder="Chọn từ Bộ nhớ Scripts..."></select>
+                </div>
+                <!-- Script Textarea -->
+                <textarea id="source-script-content" class="block w-full flex-grow bg-gray-900 border border-gray-700 rounded-md p-1 mb-2 text-xs leading-tight" placeholder="Dán kịch bản gốc vào đây..."></textarea>
+                <!-- Options Section Wrapper (allows scrolling) -->
+                <div class="flex-shrink-0 flex flex-col min-h-0">
+                    <h2 class="text-sm font-bold mb-2 leading-tight flex-shrink-0">Tùy chọn</h2>
+                    <div class="overflow-y-auto pr-2">
+                         <form id="s2se-form" class="space-y-2">
+                            <div>
+                                <label for="section-count" class="block text-xs font-medium text-gray-300 leading-tight mb-1">Số lượng Section mong muốn</label>
+                                <input type="number" id="section-count" placeholder="Ví dụ: 8" class="mt-1 block w-full px-1 py-1 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 text-xs leading-tight">
+                            </div>
+                            <div>
+                                <label for="s2se-input-se" class="block text-xs font-medium text-teal-400 leading-tight mb-1">Tham khảo Sections (Tùy chọn)</label>
+                                <select id="s2se-input-se" class="mt-1 block w-full px-1 py-1 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 text-xs leading-tight" placeholder="Chọn từ Bộ nhớ Sections..."></select>
+                            </div>
+                            <div class="flex items-center justify-between pt-2">
+                                <label for="detail-toggle" class="text-xs font-medium text-gray-300 leading-tight" title="Chức năng nút này là làm chi tiết Prompt theo AI">Làm chi tiết Sections</label>
+                                <label class="relative inline-flex items-center cursor-pointer" title="Chức năng nút này là làm chi tiết Prompt theo AI">
+                                    <input type="checkbox" id="detail-toggle" class="sr-only peer">
+                                    <div class="w-11 h-6 bg-gray-600 rounded-full peer peer-focus:ring-2 peer-focus:ring-green-400 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
+                                </label>
+                            </div>
+                            <div class="flex items-center justify-between pt-2">
+                                <label for="expander-toggle" class="text-xs font-medium text-gray-300 leading-tight" title="Bật để sử dụng Expander cho Prompt">Sử dụng Expander</label>
+                                <label class="relative inline-flex items-center cursor-pointer" title="Bật để sử dụng Expander cho Prompt">
+                                    <input type="checkbox" id="expander-toggle" class="sr-only peer">
+                                    <div class="w-11 h-6 bg-gray-600 rounded-full peer peer-focus:ring-2 peer-focus:ring-purple-400 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-500"></div>
+                                </label>
+                            </div>
+                            <!-- Tùy chọn mở rộng cho Làm chi tiết Sections -->
+                            <div class="border-t border-gray-700 pt-2 space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <label for="repeat-description-toggle" class="text-xs font-medium text-gray-300 leading-tight">Lặp lại 100% mô tả</label>
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" id="repeat-description-toggle" class="sr-only peer">
+                                        <div class="w-11 h-6 bg-gray-600 rounded-full peer peer-focus:ring-2 peer-focus:ring-yellow-400 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-yellow-500"></div>
+                                    </label>
+                                </div>
+                                <div>
+                                    <label for="character-repeat-select" class="block text-xs font-medium text-gray-300 leading-tight mb-1">Nhân vật</label>
+                                    <select id="character-repeat-select" class="block w-full px-1 py-1 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 text-xs leading-tight">
+                                        <option value="">Chọn Nhân vật...</option>
+                                        <!-- Dữ liệu nhân vật sẽ được thêm động từ bộ nhớ -->
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="scene-repeat-select" class="block text-xs font-medium text-gray-300 leading-tight mb-1">Bối cảnh</label>
+                                    <select id="scene-repeat-select" class="block w-full px-1 py-1 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 text-xs leading-tight">
+                                        <option value="">Chọn Bối cảnh...</option>
+                                        <!-- Dữ liệu bối cảnh sẽ được thêm động từ bộ nhớ -->
+                                    </select>
+                                </div>
+                                <!-- ...existing code... -->
+                            </div>
+                            <div class="flex justify-end space-x-4 pt-4">
+                                <button type="submit" id="generate-sections-btn" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-md min-w-[100px] flex justify-center items-center">
+                                    <span class="btn-text">Tạo Sections</span><span class="loader hidden ml-2"></span>
+                                </button>
+                            </div>
+                        </form>
                     </div>
-                    <div class="space-y-4">
-                        <div>
-                            <label for="script-input-script" class="block text-sm font-medium text-yellow-400">Chọn Ý Tưởng và Dự Án</label>
-                            <select id="script-input-script" class="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-yellow-500"></select>
-                        </div>
-                        <div>
-                            <label for="script-input-voice" class="block text-sm font-medium text-yellow-400">Chọn hướng dẫn Voice Off</label>
-                            <select id="script-input-voice" class="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-yellow-500"></select>
-                        </div>
-                        <div>
-                            <label for="script-style" class="block text-sm font-medium text-gray-300">Phong cách (Tùy chọn)</label>
-                            <select id="script-style" class="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-yellow-500">
-                                <option value="">Mặc định</option>
-                                <option>Storytelling</option><option>Hài hước</option><option>Chính kịch</option><option>Hành động</option><option>Kinh dị</option><option>Kịch câm</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label for="script-duration" class="block text-sm font-medium text-gray-300">Thời lượng</label>
-                             <select id="script-duration" required class="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-yellow-500">
-                                <option value="1">1 phút</option><option value="10">10 phút</option><option value="60">60 phút</option><option value="custom">Tùy chỉnh...</option>
-                            </select>
-                            <input type="number" id="script-duration-custom" placeholder="Nhập số phút" class="hidden mt-2 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md">
-                        </div>
-                         <div>
-                            <label for="word-limit" class="block text-sm font-medium text-gray-300">Giới hạn số từ (Tùy chọn)</label>
-                            <input type="number" id="word-limit" placeholder="Ví dụ: 500" class="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-yellow-500">
-                        </div>
-                        <!-- New Toggles -->
-                        <div class="flex items-center justify-between pt-2">
-                            <label for="character-prompt-toggle" class="text-sm font-medium text-gray-300">Tạo Prompt Nhân vật</label>
-                            <label class="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" id="character-prompt-toggle" class="sr-only peer">
-                                <div class="w-11 h-6 bg-gray-600 rounded-full peer peer-focus:ring-2 peer-focus:ring-green-400 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
-                            </label>
-                        </div>
-                        <div class="flex items-center justify-between">
-                            <label for="scene-prompt-toggle" class="text-sm font-medium text-gray-300">Tạo Prompt Bối cảnh</label>
-                            <label class="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" id="scene-prompt-toggle" class="sr-only peer">
-                                <div class="w-11 h-6 bg-gray-600 rounded-full peer peer-focus:ring-2 peer-focus:ring-green-400 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="flex justify-end space-x-4 pt-4">
-                        <button type="button" class="cancel-btn bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-md">Đóng</button>
-                        <button type="submit" id="generate-script-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md min-w-[80px] flex justify-center items-center">
-                            <span class="btn-text">Tạo</span><span class="loader hidden ml-2"></span>
-                        </button>
-                    </div>
-                </form>
+                </div>
             </div>
             <div id="sections-result-container" class="w-3/5 bg-gray-800 rounded-lg flex flex-col min-h-0 hidden p-6 panel-shadow">
                 <div class="flex justify-between items-center mb-4 flex-shrink-0">
@@ -1149,6 +1162,7 @@
         });
     </script>
 </body>
+<script>
 document.addEventListener('DOMContentLoaded', function() {
     // Xử lý nút tạo mới bộ nhớ
     var memoryNewItemBtn = document.getElementById('memory-new-item-btn');
@@ -1293,4 +1307,15 @@ document.addEventListener('DOMContentLoaded', function() {
         localStorage.removeItem('scriptToProcess');
     }
 });
+</script>
+<script>
+window.addEventListener('DOMContentLoaded', function() {
+    var script = localStorage.getItem('scriptToProcess');
+    if (script) {
+        var textarea = document.getElementById('source-script-content');
+        if (textarea) textarea.value = script;
+        localStorage.removeItem('scriptToProcess');
+    }
+});
+</script>
 </html>
