@@ -483,7 +483,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const memoryConfig = {
-                script: { title: 'Đầu vào Dự án', storageKey: 'input_scripts' },
+                script: { title: 'Đầu vào Ý tưởng', storageKey: 'input_scripts' },
                 prompt: { title: 'Đầu vào Se', storageKey: 'input_prompts' },
                 voiceOver: { title: 'Đầu vào VO', storageKey: 'input_voiceOvers' },
                 mainScripts: { title: 'Bộ nhớ Scripts', storageKey: 'memory_mainScripts' },
@@ -1129,21 +1129,8 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!title || !content) return;
             var items = getSharedMemory(lastType);
             items.push({ id: Date.now(), title: title, content: content });
-            // Lưu lại vào localStorage
-            var key = '';
-            switch(lastType) {
-                case 'script':
-                case 'mainScripts': key = 'scripts'; break;
-                case 'sections': key = 'sections'; break;
-                case 'prompt':
-                case 'mainPrompts': key = 'prompts'; break;
-                case 'voiceOver':
-                case 'mainVoiceOvers': key = 'voiceOvers'; break;
-                case 'scenes': key = 'scenes'; break;
-                case 'characters': key = 'characters'; break;
-                case 'trash': key = 'trash'; break;
-                default: key = lastType;
-            }
+            // Lưu lại vào localStorage với đúng storageKey
+            var key = memoryConfig[lastType]?.storageKey || lastType;
             localStorage.setItem(key, JSON.stringify(items));
             memoryEditorPanel.classList.add('hidden');
             // Cập nhật lại danh sách
@@ -1158,19 +1145,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     // Hàm lấy dữ liệu bộ nhớ dùng chung
     function getSharedMemory(type) {
-        switch(type) {
-            case 'script': return JSON.parse(localStorage.getItem('scripts') || '[]');
-            case 'prompt': return JSON.parse(localStorage.getItem('prompts') || '[]');
-            case 'voiceOver': return JSON.parse(localStorage.getItem('voiceOvers') || '[]');
-            case 'scenes': return JSON.parse(localStorage.getItem('scenes') || '[]');
-            case 'characters': return JSON.parse(localStorage.getItem('characters') || '[]');
-            case 'mainScripts': return JSON.parse(localStorage.getItem('scripts') || '[]');
-            case 'sections': return JSON.parse(localStorage.getItem('sections') || '[]');
-            case 'mainPrompts': return JSON.parse(localStorage.getItem('prompts') || '[]');
-            case 'mainVoiceOvers': return JSON.parse(localStorage.getItem('voiceOvers') || '[]');
-            case 'trash': return JSON.parse(localStorage.getItem('trash') || '[]');
-            default: return [];
-        }
+        var key = memoryConfig[type]?.storageKey || type;
+        return JSON.parse(localStorage.getItem(key) || '[]');
     }
 
     // Khi mở modal, render danh sách bộ nhớ dùng chung
