@@ -884,7 +884,7 @@
                     } else if (isPurge) { // For deleting all from a normal category
                         state[type] = [];
                     } else { // For moving all to trash
-                        state.trash.push(...state[type].map(item => ({...item, deletedAt: new Date().toLocaleString('vi-VN'})));
+                        state.trash.push(...state[type].map(item => ({...item, deletedAt: new Date().toLocaleString('vi-VN')})));
                         state[type] = [];
                         saveDataToStorage('trash');
                     }
