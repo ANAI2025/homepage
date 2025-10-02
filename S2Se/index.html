@@ -1109,6 +1109,28 @@
 </body>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Tự động lấy dữ liệu từ Bộ nhớ Sections cho dropdown
+    try {
+        var sections = JSON.parse(localStorage.getItem('sections') || '[]');
+        var selectSe = document.getElementById('s2se-input-se');
+        if (selectSe) {
+            selectSe.innerHTML = '<option value="">Chọn từ Bộ nhớ Sections...</option>';
+            sections.forEach(function(item) {
+                selectSe.innerHTML += `<option value="${item.id}">${item.title}</option>`;
+            });
+        }
+    } catch (e) {}
+    // Tự động lấy dữ liệu từ Bộ nhớ Scripts cho dropdown
+    try {
+        var scripts = JSON.parse(localStorage.getItem('mainScripts') || '[]');
+        var select = document.getElementById('s2se-input-script');
+        if (select) {
+            select.innerHTML = '<option value="">Chọn từ Bộ nhớ Scripts...</option>';
+            scripts.forEach(function(item) {
+                select.innerHTML += `<option value="${item.id}">${item.title}</option>`;
+            });
+        }
+    } catch (e) {}
     var script = localStorage.getItem('scriptToProcess');
     if (script) {
         var textarea = document.getElementById('source-script-content');
