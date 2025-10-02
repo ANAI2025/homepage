@@ -1113,24 +1113,24 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.memory-btn').forEach(function(btn) {
         btn.addEventListener('click', function(e) {
             var type = btn.getAttribute('data-type');
-            var modalId = '';
+            var modal = document.getElementById('memory-modal-container');
+            var title = '';
             switch(type) {
-                case 'script': modalId = 'modal-script'; break;
-                case 'prompt': modalId = 'modal-prompt'; break;
-                case 'voiceOver': modalId = 'modal-voiceover'; break;
-                case 'scenes': modalId = 'modal-scenes'; break;
-                case 'characters': modalId = 'modal-characters'; break;
-                case 'mainScripts': modalId = 'modal-mainScripts'; break;
-                case 'sections': modalId = 'modal-sections'; break;
-                case 'mainPrompts': modalId = 'modal-mainPrompts'; break;
-                case 'mainVoiceOvers': modalId = 'modal-mainVoiceOvers'; break;
-                case 'trash': modalId = 'modal-trash'; break;
+                case 'script': title = 'Ý tưởng'; break;
+                case 'prompt': title = 'Section'; break;
+                case 'voiceOver': title = 'Voice Over'; break;
+                case 'scenes': title = 'Bối cảnh'; break;
+                case 'characters': title = 'Nhân vật'; break;
+                case 'mainScripts': title = 'Bộ nhớ Scripts'; break;
+                case 'sections': title = 'Bộ nhớ Sections'; break;
+                case 'mainPrompts': title = 'Bộ nhớ Prompts'; break;
+                case 'mainVoiceOvers': title = 'Bộ nhớ Voice Off'; break;
+                case 'trash': title = 'Bộ nhớ Rác'; break;
             }
-            if (modalId) {
-                var modal = document.getElementById(modalId);
-                if (modal) {
-                    modal.classList.remove('hidden');
-                }
+            if (modal) {
+                modal.classList.remove('hidden');
+                var modalTitle = document.getElementById('memory-modal-title');
+                if (modalTitle) modalTitle.textContent = title || 'Bộ nhớ';
             }
         });
     });
