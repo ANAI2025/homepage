@@ -176,8 +176,7 @@
                     location.reload(); // Làm mới lại giao diện giống như ấn F5
                 };
             </script>
-            // Xóa toàn bộ đoạn script cũ bị lặp, chỉ giữ lại một khối logic chuẩn phía trên
-            // Logic chuẩn phía trên đã được giữ lại
+            <ul class="space-y-2">
                 <div class="sidebar-group-yellow">
                     <li><button data-type="script" title="Đầu vào Ý tưởng" class="memory-btn w-full flex justify-center items-center p-2 space-x-2 rounded-full"><span class="text-sm font-bold w-5 text-center flex-shrink-0 text-black">I</span><span class="sidebar-text text-sm">Ý tưởng</span></button></li>
                     <li><button data-type="prompt" title="Đầu vào Se" class="memory-btn w-full flex justify-center items-center p-2 space-x-2 rounded-full"><span class="text-sm font-bold w-5 text-center flex-shrink-0 text-black">Se</span><span class="sidebar-text text-sm">Section</span></button></li>
@@ -497,42 +496,39 @@
             };
 
             const state = {
-                    script: { title: 'Đầu vào Ý tưởng', storageKey: 'input_scripts' },
-                    prompt: { title: 'Đầu vào Se', storageKey: 'input_prompts' },
-                    voiceOver: { title: 'Đầu vào VO', storageKey: 'input_voiceOvers' },
-                    mainScripts: { title: 'Bộ nhớ Scripts', storageKey: 'memory_mainScripts' },
-                    sections: { title: 'Bộ nhớ Sections', storageKey: 'memory_sections' },
-                    scenes: { title: 'Bộ nhớ Bối cảnh', storageKey: 'memory_scenes' },
-                    characters: { title: 'Bộ nhớ Nhân vật', storageKey: 'memory_characters' },
-                    mainPrompts: { title: 'Bộ nhớ Prompts', storageKey: 'memory_mainPrompts' },
-                    mainVoiceOvers: { title: 'Bộ nhớ Voice Off', storageKey: 'memory_mainVoiceOvers' },
-            trash: { title: 'Bộ nhớ Rác', storageKey: 'memory_trash' }
-        };
+                script: JSON.parse(localStorage.getItem(memoryConfig.script.storageKey)) || [],
+                prompt: JSON.parse(localStorage.getItem(memoryConfig.prompt.storageKey)) || [],
+                voiceOver: JSON.parse(localStorage.getItem(memoryConfig.voiceOver.storageKey)) || [],
+                mainScripts: JSON.parse(localStorage.getItem(memoryConfig.mainScripts.storageKey)) || [],
+                sections: JSON.parse(localStorage.getItem(memoryConfig.sections.storageKey)) || [],
+                scenes: JSON.parse(localStorage.getItem(memoryConfig.scenes.storageKey)) || [],
+                characters: JSON.parse(localStorage.getItem(memoryConfig.characters.storageKey)) || [],
+                mainPrompts: JSON.parse(localStorage.getItem(memoryConfig.mainPrompts.storageKey)) || [],
+                mainVoiceOvers: JSON.parse(localStorage.getItem(memoryConfig.mainVoiceOvers.storageKey)) || [],
+                trash: JSON.parse(localStorage.getItem(memoryConfig.trash.storageKey)) || [],
+                settings: {
+                    apiKey: localStorage.getItem('apiKey') || '',
+                    aiModel: localStorage.getItem('aiModel') || 'gemini-2.5-flash-preview-05-20'
+                },
+                itemToDelete: null,
+                currentMemoryType: null,
+            };
+            window.ANP_STATE = state;
+
+            // --- UI Elements ---
+            const sourceScriptContent = document.getElementById('source-script-content');
+            const sectionsResultContainer = document.getElementById('sections-result-container');
+            const sectionsList = document.getElementById('sections-list');
+            const s2seForm = document.getElementById('s2se-form');
+            const closeResultsBtn = document.getElementById('close-results-btn');
+            const saveAllSectionsBtn = document.getElementById('save-all-sections-btn');
+            const detailToggle = document.getElementById('detail-toggle');
+            const s2seInputScript = document.getElementById('s2se-input-script');
+            const s2seInputSe = document.getElementById('s2se-input-se');
+            const characterSelect = document.getElementById('s2se-character-select');
+            const sceneSelect = document.getElementById('s2se-scene-select');
+            const cameraDescription = document.getElementById('s2se-camera-description');
             const inputPanel = document.getElementById('input-panel');
-                // --- Dropdown population for Bộ nhớ Scripts ---
-                const s2seInputScript = document.getElementById('s2se-input-script');
-                const s2seInputSe = document.getElementById('s2se-input-se');
-                const characterSelect = document.getElementById('character-repeat-select');
-                const sceneSelect = document.getElementById('scene-repeat-select');
-
-                function populateAllInputDropdowns() {
-                    const populate = (select, data, placeholder) => {
-                        if (!select) return;
-                        const currentValue = select.value;
-                        select.innerHTML = `<option value="">${placeholder}</option>`;
-                        [...data].sort((a, b) => b.id - a.id).forEach(item => {
-                            select.innerHTML += `<option value="${item.id}">${item.title}</option>`;
-                        });
-                        select.value = currentValue;
-                    };
-                    populate(s2seInputScript, state.mainScripts, 'Chọn từ Bộ nhớ Scripts...');
-                    populate(s2seInputSe, state.sections, 'Chọn từ Bộ nhớ Sections...');
-                    populate(characterSelect, state.characters, 'Chọn Nhân vật...');
-                    populate(sceneSelect, state.scenes, 'Chọn Bối cảnh...');
-                }
-
-                // Populate dropdowns on load
-                populateAllInputDropdowns();
 
             // --- Modal Elements ---
             const memoryModalContainer = document.getElementById('memory-modal-container');
@@ -840,16 +836,11 @@
                 const exportBtn = e.target.closest('.export-btn');
                 if (editBtn) {
                     const id = editBtn.dataset.id;
-                    const type = state.currentMemoryType;
-                    const item = state[type]?.find(i => i.id == id);
-                    if (item) {
-                        memoryModalIdInput.value = item.id;
-                        memoryModalTitleInput.value = item.title;
-                        memoryModalContentInput.value = item.content;
-                        state.isEditingMemory = true;
-                        memoryEditorPanel.classList.remove('hidden');
-                        memoryModalTitleInput.focus();
-                    }
+                    loadItemIntoMemoryForm(id);
+                    state.isEditingMemory = true;
+                    memoryEditorPanel.classList.remove('hidden');
+                    if (typeof updateMemoryEditorMode === 'function') updateMemoryEditorMode();
+                    memoryModalTitleInput.focus();
                 }
                 if (copyBtn) {
                     const id = copyBtn.dataset.id;
@@ -937,27 +928,6 @@
                 }
                 saveDataToStorage(type);
                 renderMemoryList();
-                // Đưa các nút vào một hàng ngang phía dưới nút Lưu
-                let btnRow = document.getElementById('memory-btn-row');
-                if (!btnRow) {
-                    btnRow = document.createElement('div');
-                    btnRow.id = 'memory-btn-row';
-                    btnRow.className = 'flex space-x-2 mt-4 justify-end';
-                    memoryModalForm.parentNode.appendChild(btnRow);
-                }
-                btnRow.innerHTML = '';
-                // Chỉnh sửa
-                if (!memoryEditBtn.classList.contains('hidden')) {
-                    btnRow.appendChild(memoryEditBtn);
-                }
-                // Copy
-                if (!memoryCopyBtn.classList.contains('hidden')) {
-                    btnRow.appendChild(memoryCopyBtn);
-                }
-                // Xuất TXT
-                if (!memoryExportBtn.classList.contains('hidden')) {
-                    btnRow.appendChild(memoryExportBtn);
-                }
                 memoryEditorPanel.classList.add('hidden');
                 showToast('Đã lưu!', 'success');
             });
@@ -1192,6 +1162,7 @@
         });
     </script>
 </body>
+<script>
 document.addEventListener('DOMContentLoaded', function() {
     // Xử lý nút tạo mới bộ nhớ
     var memoryNewItemBtn = document.getElementById('memory-new-item-btn');
