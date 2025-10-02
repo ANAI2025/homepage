@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thư viện PROMPTS & EXPANDER</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            font-family: 'Inter', sans-serif; 
+        }
+        .hidden {
+            display: none;
+        }
+        .item-card.dragging {
+            opacity: 0.5;
+            transform: rotate(2deg);
+        }
+        .drop-zone.drag-over {
+            background-color: #374151; /* bg-gray-700 */
+            border: 2px dashed #4b5563;
+        }
+        .item-card .delete-btn {
+            visibility: hidden;
+            opacity: 0;
+            transition: all 0.2s ease-in-out;
+        }
+        .item-card:hover .delete-btn {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white p-8">
+    
+    <div class="flex space-x-8 h-full">
+        <!-- Left Sidebar -->
+        <div class="flex-shrink-0 w-60">
+            <div class="flex flex-col space-y-4 h-full">
+                <div>
+                    <button id="add-prompt-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg transition duration-300 w-full text-left">
+                        Tạo prompt mới
+                    </button>
+                </div>
+                <div>
+                    <button id="storage-btn" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-6 rounded-lg transition duration-300 w-full text-left">
+                        Danh bạ lưu trữ
+                    </button>
+                </div>
+                <div class="border-t border-gray-700 my-2"></div>
+                <div>
+                    <button id="expander-btn" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-6 rounded-lg transition duration-300 w-full text-left">
+                        Tạo EXPANDER
+                    </button>
+                </div>
+                <div>
+                    <button id="expander-storage-btn" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-6 rounded-lg transition duration-300 w-full text-left">
+                        Lưu trữ EXPANDER
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="flex-grow">
+            <!-- Vùng nhập liệu PROMPT, ẩn mặc định -->
+            <div id="prompt-form-container" class="hidden bg-gray-800 p-6 rounded-lg">
+                <h2 class="text-xl font-bold mb-4">Tạo PROMPT mới</h2>
+                <form id="prompt-form" class="space-y-4">
+                    <div>
+                        <label for="prompt-title" class="block text-sm font-medium text-gray-300">Tiêu đề</label>
+                        <input type="text" id="prompt-title" required class="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label for="prompt-category" class="block text-sm font-medium text-gray-300">Danh bạ</label>
+                        <select id="prompt-category" required class="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500">
+                            <!-- Categories will be populated dynamically -->
+                        </select>
+                    </div>
+                    <div>
+                        <label for="prompt-content" class="block text-sm font-medium text-gray-300">Nội dung</label>
+                        <textarea id="prompt-content" rows="8" required class="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500"></textarea>
+                    </div>
+                    <div class="flex justify-end space-x-4 pt-2">
+                        <button type="button" class="cancel-btn bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-md">Hủy</button>
+                        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md">Lưu</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Vùng nhập liệu EXPANDER, ẩn mặc định -->
+            <div id="expander-form-container" class="hidden bg-gray-800 p-6 rounded-lg">
+                <h2 class="text-xl font-bold mb-4">Tạo EXPANDER mới</h2>
+                <form id="expander-form" class="space-y-4">
+                    <div>
+                        <label for="expander-title" class="block text-sm font-medium text-gray-300">Tiêu đề</label>
+                        <input type="text" id="expander-title" required class="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-purple-500">
+                    </div>
+                    <div>
+                        <label for="expander-category" class="block text-sm font-medium text-gray-300">Danh bạ</label>
+                        <select id="expander-category" required class="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-purple-500">
+                           <!-- Categories will be populated dynamically -->
+                        </select>
+                    </div>
+                    <div>
+                        <label for="expander-content" class="block text-sm font-medium text-gray-300">Nội dung</label>
+                        <textarea id="expander-content" rows="8" required class="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-purple-500"></textarea>
+                    </div>
+                    <div class="flex justify-end space-x-4 pt-2">
+                        <button type="button" class="cancel-btn bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-md">Hủy</button>
+                        <button type="submit" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-md">Lưu</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Vùng lưu trữ PROMPT, ẩn mặc định -->
+            <div id="storage-container" class="hidden">
+                <h2 class="text-2xl font-bold mb-6">Danh bạ lưu trữ</h2>
+                <div id="prompt-storage-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Prompt columns will be rendered here -->
+                </div>
+            </div>
+
+            <!-- Vùng lưu trữ EXPANDER, ẩn mặc định -->
+            <div id="expander-storage-container" class="hidden">
+                <h2 class="text-2xl font-bold mb-6">Lưu trữ EXPANDER</h2>
+                <div id="expander-storage-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Expander columns will be rendered here -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal for adding new category -->
+    <div id="add-category-modal" class="hidden fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4">
+        <div class="bg-gray-800 rounded-lg shadow-xl p-8 w-full max-w-md">
+            <h2 class="text-xl font-bold mb-4">Thêm danh bạ mới</h2>
+            <form id="add-category-form">
+                 <input type="hidden" id="category-type-input">
+                <div>
+                    <label for="new-category-name" class="block text-sm font-medium text-gray-300">Tên danh bạ</label>
+                    <input type="text" id="new-category-name" required class="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500">
+                </div>
+                <div class="flex justify-end mt-6 space-x-4">
+                    <button type="button" id="cancel-add-category-btn" class="bg-gray-600 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded-md transition-colors">Hủy</button>
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md transition-colors">Lưu</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- Modal for Viewing Items -->
+    <div id="view-item-modal" class="hidden fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4">
+        <div class="bg-gray-800 rounded-lg shadow-xl p-8 w-full max-w-2xl">
+            <h2 id="view-item-title" class="text-2xl font-bold mb-4"></h2>
+            <div id="view-item-content" class="text-gray-300 bg-gray-700 p-4 rounded-md whitespace-pre-wrap max-h-96 overflow-y-auto"></div>
+            <div class="flex justify-end mt-6 space-x-4">
+                <button id="download-view-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-md transition-colors">Tải TXT</button>
+                <button id="copy-view-btn" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md transition-colors">Copy</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="delete-confirm-modal" class="hidden fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4">
+        <div class="bg-gray-700 rounded-lg shadow-xl p-8 w-full max-w-md">
+            <h2 class="text-xl font-bold mb-4">Xác nhận xóa</h2>
+            <p class="text-gray-300 mb-6">Bạn có chắc chắn muốn xóa mục này không? Hành động này không thể hoàn tác.</p>
+            <div class="flex justify-end space-x-4">
+                <button type="button" id="cancel-delete-btn" class="bg-gray-600 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded-md">Hủy</button>
+                <button type="button" id="confirm-delete-btn" class="bg-red-600 hover:bg-red-500 text-white font-bold py-2 px-4 rounded-md">Xóa</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- DOM Elements ---
+            const addPromptBtn = document.getElementById('add-prompt-btn');
+            const storageBtn = document.getElementById('storage-btn');
+            const expanderBtn = document.getElementById('expander-btn');
+            const expanderStorageBtn = document.getElementById('expander-storage-btn');
+            
+            const promptFormContainer = document.getElementById('prompt-form-container');
+            const expanderFormContainer = document.getElementById('expander-form-container');
+            const storageContainer = document.getElementById('storage-container');
+            const expanderStorageContainer = document.getElementById('expander-storage-container');
+
+            const promptForm = document.getElementById('prompt-form');
+            const expanderForm = document.getElementById('expander-form');
+            const promptCategorySelect = document.getElementById('prompt-category');
+            const expanderCategorySelect = document.getElementById('expander-category');
+
+            const addCategoryModal = document.getElementById('add-category-modal');
+            const addCategoryForm = document.getElementById('add-category-form');
+            const newCategoryNameInput = document.getElementById('new-category-name');
+            const categoryTypeInput = document.getElementById('category-type-input');
+            const cancelAddCategoryBtn = document.getElementById('cancel-add-category-btn');
+            
+            const viewItemModal = document.getElementById('view-item-modal');
+            const viewItemTitle = document.getElementById('view-item-title');
+            const viewItemContent = document.getElementById('view-item-content');
+            const copyViewBtn = document.getElementById('copy-view-btn');
+            const downloadViewBtn = document.getElementById('download-view-btn');
+
+            const deleteConfirmModal = document.getElementById('delete-confirm-modal');
+            const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
+            const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
+
+            // --- State ---
+            let prompts = JSON.parse(localStorage.getItem('prompts')) || [];
+            let expanders = JSON.parse(localStorage.getItem('expanders')) || [];
+            let promptCategories = JSON.parse(localStorage.getItem('promptCategories')) || ['Góc máy', 'Kiến Trúc', 'Trending'];
+            let expanderCategories = JSON.parse(localStorage.getItem('expanderCategories')) || ['CINEMATIC', 'FILM NOIR', 'ACTION FIGURE'];
+            let currentItemInView = null;
+            let draggedItem = null;
+            let itemToDelete = null;
+
+            // --- Utility Functions ---
+            function hideAllContainers() {
+                promptFormContainer.classList.add('hidden');
+                storageContainer.classList.add('hidden');
+                expanderFormContainer.classList.add('hidden');
+                expanderStorageContainer.classList.add('hidden');
+            }
+
+            function savePrompts() { localStorage.setItem('prompts', JSON.stringify(prompts)); }
+            function saveExpanders() { localStorage.setItem('expanders', JSON.stringify(expanders)); }
+            function savePromptCategories() { localStorage.setItem('promptCategories', JSON.stringify(promptCategories)); }
+            function saveExpanderCategories() { localStorage.setItem('expanderCategories', JSON.stringify(expanderCategories)); }
+
+            function populateCategorySelect(selectElement, categories) {
+                selectElement.innerHTML = '';
+                categories.forEach(cat => {
+                    const option = document.createElement('option');
+                    option.value = cat;
+                    option.textContent = cat;
+                    selectElement.appendChild(option);
+                });
+                const addNewOption = document.createElement('option');
+                addNewOption.value = 'add_new';
+                addNewOption.textContent = '-- Thêm danh bạ mới --';
+                selectElement.appendChild(addNewOption);
+            }
+
+            // --- Rendering ---
+            function renderPromptStorage() {
+                const promptGrid = document.getElementById('prompt-storage-grid');
+                promptGrid.innerHTML = '';
+                
+                promptCategories.forEach(category => {
+                    const categoryPrompts = prompts.filter(p => p.category === category);
+                    if (categoryPrompts.length === 0) return; // Don't render empty categories
+
+                    const columnEl = document.createElement('div');
+                    columnEl.className = 'bg-gray-800 p-4 rounded-lg drop-zone transition-colors';
+                    columnEl.dataset.category = category;
+
+                    columnEl.innerHTML = `<h3 class="font-bold text-lg mb-4 text-center pointer-events-none">${category}</h3>`;
+
+                    const cardsContainer = document.createElement('div');
+                    cardsContainer.className = 'space-y-3 min-h-[100px]';
+
+                    categoryPrompts.forEach(prompt => {
+                        const card = createCardElement(prompt, 'prompt');
+                        card.draggable = true;
+                        cardsContainer.appendChild(card);
+                    });
+                    
+                    columnEl.appendChild(cardsContainer);
+                    promptGrid.appendChild(columnEl);
+                });
+            }
+
+            function renderExpanderStorage() {
+                const expanderGrid = document.getElementById('expander-storage-grid');
+                expanderGrid.innerHTML = '';
+                
+                expanderCategories.forEach(category => {
+                    const categoryExpanders = expanders.filter(p => p.category === category);
+                     if (categoryExpanders.length === 0) return;
+
+                    const columnEl = document.createElement('div');
+                    columnEl.className = 'bg-gray-800 p-4 rounded-lg drop-zone transition-colors';
+                    columnEl.dataset.category = category;
+
+                    columnEl.innerHTML = `<h3 class="font-bold text-lg mb-4 text-center pointer-events-none">${category}</h3>`;
+                    
+                    const cardsContainer = document.createElement('div');
+                    cardsContainer.className = 'space-y-3 min-h-[100px]';
+
+                    categoryExpanders.forEach(expander => {
+                        const card = createCardElement(expander, 'expander');
+                        card.draggable = true;
+                        cardsContainer.appendChild(card);
+                    });
+                    
+                    columnEl.appendChild(cardsContainer);
+                    expanderGrid.appendChild(columnEl);
+                });
+            }
+
+            function createCardElement(item, type) {
+                const card = document.createElement('div');
+                card.className = `item-card ${type}-card bg-gray-700 p-3 rounded hover:bg-gray-600 transition-colors relative`;
+                card.dataset.id = item.id;
+                card.dataset.type = type;
+
+                card.innerHTML = `
+                    <div class="cursor-pointer">
+                        <h4 class="font-semibold pointer-events-none">${item.title}</h4>
+                        <p class="text-sm text-gray-400 truncate pointer-events-none">${item.content}</p>
+                    </div>
+                    <button class="delete-btn absolute top-1 right-1 text-gray-500 hover:text-red-400 p-1 rounded-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
+                `;
+                return card;
+            }
+
+            // --- Modal Logic ---
+            function showItemDetails(itemId, type) {
+                const source = type === 'prompt' ? prompts : expanders;
+                const item = source.find(p => p.id == itemId);
+                if (item) {
+                    currentItemInView = item;
+                    viewItemTitle.textContent = item.title;
+                    viewItemContent.textContent = item.content;
+                    viewItemModal.classList.remove('hidden');
+                }
+            }
+            
+            function openDeleteModal(id, type) {
+                itemToDelete = { id, type };
+                deleteConfirmModal.classList.remove('hidden');
+            }
+
+            function closeDeleteModal() {
+                itemToDelete = null;
+                deleteConfirmModal.classList.add('hidden');
+            }
+
+            function performDelete() {
+                if (!itemToDelete) return;
+                
+                if (itemToDelete.type === 'prompt') {
+                    prompts = prompts.filter(p => p.id != itemToDelete.id);
+                    savePrompts();
+                    renderPromptStorage();
+                } else if (itemToDelete.type === 'expander') {
+                    expanders = expanders.filter(e => e.id != itemToDelete.id);
+                    saveExpanders();
+                    renderExpanderStorage();
+                }
+                
+                closeDeleteModal();
+            }
+
+            // --- Download and Copy ---
+            function downloadAsTxt(title, content) {
+                const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                const fileName = title.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '_').substring(0, 50) + '.txt';
+                link.href = url;
+                link.download = fileName;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+            }
+
+            // --- Event Listeners ---
+            addPromptBtn.addEventListener('click', () => {
+                hideAllContainers();
+                populateCategorySelect(promptCategorySelect, promptCategories);
+                promptFormContainer.classList.remove('hidden');
+            });
+            storageBtn.addEventListener('click', () => {
+                hideAllContainers();
+                renderPromptStorage();
+                storageContainer.classList.remove('hidden');
+            });
+            expanderBtn.addEventListener('click', () => {
+                hideAllContainers();
+                 populateCategorySelect(expanderCategorySelect, expanderCategories);
+                expanderFormContainer.classList.remove('hidden');
+            });
+            expanderStorageBtn.addEventListener('click', () => {
+                hideAllContainers();
+                renderExpanderStorage();
+                expanderStorageContainer.classList.remove('hidden');
+            });
+
+            document.querySelectorAll('.cancel-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    btn.closest('.bg-gray-800').classList.add('hidden');
+                });
+            });
+            
+            viewItemModal.addEventListener('click', (e) => {
+                if (e.target === viewItemModal) viewItemModal.classList.add('hidden');
+            });
+
+            copyViewBtn.addEventListener('click', () => {
+                const contentToCopy = viewItemContent.textContent;
+                navigator.clipboard.writeText(contentToCopy).then(() => {
+                    copyViewBtn.textContent = 'Đã sao chép!';
+                    setTimeout(() => { copyViewBtn.textContent = 'Copy'; }, 2000);
+                }).catch(err => alert('Sao chép thất bại!'));
+            });
+
+
+            downloadViewBtn.addEventListener('click', () => {
+                if (currentItemInView) {
+                    downloadAsTxt(currentItemInView.title, currentItemInView.content);
+                }
+            });
+
+            // Click listener for viewing details AND deleting
+            document.body.addEventListener('click', (e) => {
+                const card = e.target.closest('.item-card');
+                const deleteBtn = e.target.closest('.delete-btn');
+
+                if (deleteBtn) {
+                    const itemCard = deleteBtn.closest('.item-card');
+                    openDeleteModal(itemCard.dataset.id, itemCard.dataset.type);
+                } else if (card) {
+                    showItemDetails(card.dataset.id, card.dataset.type);
+                }
+            });
+            
+            // --- Drag and Drop Logic ---
+            function handleDragStart(e) {
+                if (e.target.matches('.item-card')) {
+                    draggedItem = e.target;
+                    setTimeout(() => e.target.classList.add('dragging'), 0);
+                }
+            }
+
+            function handleDragEnd(e) {
+                if (draggedItem) {
+                    draggedItem.classList.remove('dragging');
+                    draggedItem = null;
+                }
+            }
+            
+            function handleDragOver(e) {
+                e.preventDefault();
+                const dropZone = e.target.closest('.drop-zone');
+                if (dropZone) {
+                    dropZone.classList.add('drag-over');
+                }
+            }
+
+            function handleDragLeave(e) {
+                const dropZone = e.target.closest('.drop-zone');
+                if (dropZone) {
+                    dropZone.classList.remove('drag-over');
+                }
+            }
+
+            function handleDrop(e) {
+                 e.preventDefault();
+                const dropZone = e.target.closest('.drop-zone');
+                if (!dropZone || !draggedItem) return;
+                
+                dropZone.classList.remove('drag-over');
+                const itemId = draggedItem.dataset.id;
+                const itemType = draggedItem.dataset.type;
+                const newCategory = dropZone.dataset.category;
+
+                if (itemType === 'prompt') {
+                    const itemToMove = prompts.find(p => p.id == itemId);
+                    if (itemToMove) {
+                        itemToMove.category = newCategory;
+                        savePrompts();
+                        renderPromptStorage();
+                    }
+                } else if (itemType === 'expander') {
+                    const itemToMove = expanders.find(p => p.id == itemId);
+                    if (itemToMove) {
+                        itemToMove.category = newCategory;
+                        saveExpanders();
+                        renderExpanderStorage();
+                    }
+                }
+            }
+            
+            [storageContainer, expanderStorageContainer].forEach(container => {
+                container.addEventListener('dragstart', handleDragStart);
+                container.addEventListener('dragend', handleDragEnd);
+                container.addEventListener('dragover', handleDragOver);
+                container.addEventListener('dragleave', handleDragLeave);
+                container.addEventListener('drop', handleDrop);
+            });
+
+            // --- Form Submissions ---
+            promptForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const newPrompt = {
+                    id: Date.now(),
+                    title: document.getElementById('prompt-title').value,
+                    category: document.getElementById('prompt-category').value,
+                    content: document.getElementById('prompt-content').value,
+                };
+                prompts.push(newPrompt);
+                savePrompts();
+                promptForm.reset();
+                promptFormContainer.classList.add('hidden');
+                alert('Đã lưu prompt thành công!');
+            });
+            
+            expanderForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const newExpander = {
+                    id: Date.now(),
+                    title: document.getElementById('expander-title').value,
+                    category: document.getElementById('expander-category').value,
+                    content: document.getElementById('expander-content').value,
+                };
+                expanders.push(newExpander);
+                saveExpanders();
+                expanderForm.reset();
+                expanderFormContainer.classList.add('hidden');
+                alert('Đã lưu EXPANDER thành công!');
+            });
+
+            // --- Add Category Logic ---
+            function handleCategoryChange(e, type) {
+                if (e.target.value === 'add_new') {
+                    categoryTypeInput.value = type;
+                    addCategoryModal.classList.remove('hidden');
+                }
+            }
+
+            promptCategorySelect.addEventListener('change', (e) => handleCategoryChange(e, 'prompt'));
+            expanderCategorySelect.addEventListener('change', (e) => handleCategoryChange(e, 'expander'));
+            
+            cancelAddCategoryBtn.addEventListener('click', () => {
+                addCategoryModal.classList.add('hidden');
+                // Reset select to avoid being stuck on "add new"
+                populateCategorySelect(promptCategorySelect, promptCategories);
+                populateCategorySelect(expanderCategorySelect, expanderCategories);
+            });
+
+            addCategoryForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const newCategory = newCategoryNameInput.value.trim();
+                const type = categoryTypeInput.value;
+                if (!newCategory) return;
+
+                if (type === 'prompt') {
+                    if (!promptCategories.includes(newCategory)) {
+                        promptCategories.push(newCategory);
+                        savePromptCategories();
+                    }
+                    populateCategorySelect(promptCategorySelect, promptCategories);
+                    promptCategorySelect.value = newCategory;
+                } else if (type === 'expander') {
+                     if (!expanderCategories.includes(newCategory)) {
+                        expanderCategories.push(newCategory);
+                        saveExpanderCategories();
+                    }
+                    populateCategorySelect(expanderCategorySelect, expanderCategories);
+                    expanderCategorySelect.value = newCategory;
+                }
+
+                addCategoryForm.reset();
+                addCategoryModal.classList.add('hidden');
+            });
+
+
+            // --- Delete Modal Listeners ---
+            cancelDeleteBtn.addEventListener('click', closeDeleteModal);
+            confirmDeleteBtn.addEventListener('click', performDelete);
+
+        });
+    </script>
+</body>
+</html>
+
