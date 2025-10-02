@@ -417,7 +417,7 @@
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Sidebar: chuyển hướng sang trang bộ nhớ khi nhấn nút
+            // Sidebar: chỉ chuyển hướng sang trang bộ nhớ khi nhấn nút
             const memoryPageMap = {
                 mainScripts: './bo-nho-scripts/index.html',
                 sections: './bo-nho-sections/index.html',
@@ -436,8 +436,6 @@
                     const type = btn.getAttribute('data-type');
                     if (memoryPageMap[type]) {
                         window.location.href = memoryPageMap[type];
-                    } else {
-                        openMemoryModal(type);
                     }
                 });
             });
