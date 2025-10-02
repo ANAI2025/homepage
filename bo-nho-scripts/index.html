@@ -37,13 +37,20 @@
 <body class="bg-gray-900 text-white h-screen flex flex-col p-8">
     
     <header class="flex justify-between items-center mb-6 flex-shrink-0">
-                <h1 class="text-3xl font-bold">Bộ nhớ Kịch bản</h1>
+        <h1 class="text-3xl font-bold">Bộ nhớ Kịch bản</h1>
     </header>
+    <!-- Nút Trang chủ cố định góc trái dưới -->
+    <button type="button" id="back-home-btn" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-md flex items-center fixed left-6 bottom-6 z-50 shadow-lg">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 12h18M3 12l6-6m-6 6l6 6" />
+        </svg>
+        Trang chủ
+    </button>
 
     <main class="bg-gray-800 p-6 rounded-lg w-full h-full flex flex-col shadow-2xl">
     <div class="flex space-x-6 flex-grow overflow-hidden" style="height:700px;min-height:700px;max-height:700px;">
             <!-- List Column -->
-            <div style="width:340px;min-width:340px;max-width:340px;" class="border-r border-gray-700 pr-4 flex flex-col">
+            <div style="width:100%;min-width:380px;max-width:500px;" class="border-r border-gray-700 pr-4 flex flex-col">
                 <div class="flex-shrink-0 flex justify-between items-center mb-4">
                     <h3 class="font-bold text-lg">Danh sách Kịch bản</h3>
                     <div class="flex space-x-2">
@@ -108,11 +115,15 @@
     </div>
 
     <script>
-            // Nút quay lại trang chủ
+        // Nút quay lại trang chủ
+        document.addEventListener('DOMContentLoaded', function() {
             const backHomeBtn = document.getElementById('back-home-btn');
-            backHomeBtn.addEventListener('click', () => {
-                window.location.href = '/index.html';
-            });
+            if (backHomeBtn) {
+                backHomeBtn.addEventListener('click', function() {
+                    window.location.href = '/index.html';
+                });
+            }
+        });
         document.addEventListener('DOMContentLoaded', () => {
             // --- Elements ---
             const newItemBtn = document.getElementById('new-item-btn');
