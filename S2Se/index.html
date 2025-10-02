@@ -839,11 +839,16 @@
                 const exportBtn = e.target.closest('.export-btn');
                 if (editBtn) {
                     const id = editBtn.dataset.id;
-                    loadItemIntoMemoryForm(id);
-                    state.isEditingMemory = true;
-                    memoryEditorPanel.classList.remove('hidden');
-                    if (typeof updateMemoryEditorMode === 'function') updateMemoryEditorMode();
-                    memoryModalTitleInput.focus();
+                    const type = state.currentMemoryType;
+                    const item = state[type]?.find(i => i.id == id);
+                    if (item) {
+                        memoryModalIdInput.value = item.id;
+                        memoryModalTitleInput.value = item.title;
+                        memoryModalContentInput.value = item.content;
+                        state.isEditingMemory = true;
+                        memoryEditorPanel.classList.remove('hidden');
+                        memoryModalTitleInput.focus();
+                    }
                 }
                 if (copyBtn) {
                     const id = copyBtn.dataset.id;
