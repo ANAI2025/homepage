@@ -507,25 +507,23 @@
                     mainVoiceOvers: { title: 'Bộ nhớ Voice Off', storageKey: 'memory_mainVoiceOvers' },
                     trash: { title: 'Bộ nhớ Rác', storageKey: 'memory_trash' }
                 };
+                script: JSON.parse(localStorage.getItem(memoryConfig.script.storageKey)) || [],
+                prompt: JSON.parse(localStorage.getItem(memoryConfig.prompt.storageKey)) || [],
+                voiceOver: JSON.parse(localStorage.getItem(memoryConfig.voiceOver.storageKey)) || [],
+                mainScripts: JSON.parse(localStorage.getItem(memoryConfig.mainScripts.storageKey)) || [],
+                sections: JSON.parse(localStorage.getItem(memoryConfig.sections.storageKey)) || [],
+                scenes: JSON.parse(localStorage.getItem(memoryConfig.scenes.storageKey)) || [],
+                characters: JSON.parse(localStorage.getItem(memoryConfig.characters.storageKey)) || [],
+                mainPrompts: JSON.parse(localStorage.getItem(memoryConfig.mainPrompts.storageKey)) || [],
+                mainVoiceOvers: JSON.parse(localStorage.getItem(memoryConfig.mainVoiceOvers.storageKey)) || [],
+                trash: JSON.parse(localStorage.getItem(memoryConfig.trash.storageKey)) || [],
+                settings: {
+                    apiKey: localStorage.getItem('apiKey') || '',
                     aiModel: localStorage.getItem('aiModel') || 'gemini-2.5-flash-preview-05-20'
                 },
-                    script: JSON.parse(localStorage.getItem(memoryConfig.script.storageKey)) || [],
-                    prompt: JSON.parse(localStorage.getItem(memoryConfig.prompt.storageKey)) || [],
-                    voiceOver: JSON.parse(localStorage.getItem(memoryConfig.voiceOver.storageKey)) || [],
-                    mainScripts: JSON.parse(localStorage.getItem(memoryConfig.mainScripts.storageKey)) || [],
-                    sections: JSON.parse(localStorage.getItem(memoryConfig.sections.storageKey)) || [],
-                    scenes: JSON.parse(localStorage.getItem(memoryConfig.scenes.storageKey)) || [],
-                    characters: JSON.parse(localStorage.getItem(memoryConfig.characters.storageKey)) || [],
-                    mainPrompts: JSON.parse(localStorage.getItem(memoryConfig.mainPrompts.storageKey)) || [],
-                    mainVoiceOvers: JSON.parse(localStorage.getItem(memoryConfig.mainVoiceOvers.storageKey)) || [],
-                    trash: JSON.parse(localStorage.getItem(memoryConfig.trash.storageKey)) || [],
-                    settings: {
-                        apiKey: localStorage.getItem('apiKey') || '',
-                        aiModel: localStorage.getItem('aiModel') || 'gemini-2.5-flash-preview-05-20'
-                    },
-                    currentMemoryType: 'mainScripts',
-                    isEditingMemory: false
-                };
+                currentMemoryType: 'mainScripts',
+                isEditingMemory: false
+            };
             const inputPanel = document.getElementById('input-panel');
                 // --- Dropdown population for Bộ nhớ Scripts ---
                 const s2seInputScript = document.getElementById('s2se-input-script');
