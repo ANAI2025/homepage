@@ -129,7 +129,8 @@
             const closeMainBtn = document.getElementById('close-main-btn');
             if (closeMainBtn) {
                 closeMainBtn.addEventListener('click', function() {
-                    window.history.back();
+                    // Navigate to homepage instead of history.back() to avoid returning to old pages
+                    window.location.href = '/index.html';
                 });
             }
         });
