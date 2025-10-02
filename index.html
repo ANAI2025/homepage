@@ -1630,4 +1630,17 @@ Hãy đảm bảo bạn tuân thủ đúng định dạng JSON đã yêu cầu.`
         });
     </script>
 </body>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.body.addEventListener('click', function(e) {
+        if (e.target && e.target.id === 'auto-s2se-btn') {
+            e.preventDefault();
+            var content = document.getElementById('script-result-content')?.value;
+            if (content) localStorage.setItem('scriptToProcess', content);
+            window.location.href = '/S2Se/index.html';
+        }
+    });
+});
+</script>
 </html>
+
