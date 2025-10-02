@@ -928,13 +928,13 @@
                 }
                 saveDataToStorage(type);
                 renderMemoryList();
-                // Đưa các nút vào một hàng ngang cạnh nút Lưu
+                // Đưa các nút vào một hàng ngang phía dưới nút Lưu
                 let btnRow = document.getElementById('memory-btn-row');
                 if (!btnRow) {
                     btnRow = document.createElement('div');
                     btnRow.id = 'memory-btn-row';
                     btnRow.className = 'flex space-x-2 mt-4 justify-end';
-                    memoryModalForm.appendChild(btnRow);
+                    memoryModalForm.parentNode.appendChild(btnRow);
                 }
                 btnRow.innerHTML = '';
                 // Chỉnh sửa
