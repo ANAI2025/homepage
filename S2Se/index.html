@@ -807,7 +807,9 @@
             // --- Event Listeners ---
             document.body.addEventListener('click', e => {
                 const memoryBtn = e.target.closest('.memory-btn');
-                if (memoryBtn) openMemoryModal(memoryBtn.dataset.type);
+                if (memoryBtn && memoryBtn.dataset.type) {
+                    openMemoryModal(memoryBtn.dataset.type);
+                }
                 if (e.target.closest('.close-modal-btn')) e.target.closest('.modal-overlay').classList.add('hidden');
             });
 
