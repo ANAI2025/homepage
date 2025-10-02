@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -7,39 +8,23 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-        .hidden {
-            display: none;
-        }
-        .item.active {
-            background-color: #3b82f6; /* blue-500 */
-        }
-        .delete-btn {
-            visibility: hidden;
-            opacity: 0;
-            transition: opacity 0.2s;
-        }
-        .item:hover .delete-btn {
-            visibility: visible;
-            opacity: 1;
-        }
-         /* Custom scrollbar */
+        body { font-family: 'Inter', sans-serif; }
+        .hidden { display: none !important; }
+        .script-item.active { background-color: #3b82f6; color: white; }
+        .delete-btn { visibility: hidden; opacity: 0; transition: opacity 0.2s, visibility 0.2s; }
+        .script-item:hover .delete-btn { visibility: visible; opacity: 1; }
         ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #1f2937; } /* gray-800 */
-        ::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 4px; } /* gray-600 */
-        ::-webkit-scrollbar-thumb:hover { background: #6b7280; } /* gray-500 */
+        ::-webkit-scrollbar-track { background: #1f2937; }
+        ::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #6b7280; }
     </style>
 </head>
 <body class="bg-gray-900 text-white h-screen flex flex-col p-8">
-    
     <header class="flex justify-between items-center mb-6 flex-shrink-0">
         <h1 class="text-3xl font-bold">Bộ nhớ Kịch bản</h1>
     </header>
-    <!-- Nút Trang chủ cố định, nhưng nằm ngoài vùng main để không đè lên các nút chức năng -->
     <div style="position:fixed;left:24px;bottom:24px;z-index:40;pointer-events:auto;">
         <div style="display:flex;align-items:center;gap:8px;">
             <a href="/homepage/index.html" id="go-back-btn" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-md flex items-center shadow-lg">
@@ -56,9 +41,8 @@
             </a>
         </div>
     </div>
-
     <main class="bg-gray-800 p-6 rounded-lg w-full h-full flex flex-col shadow-2xl">
-    <div class="flex space-x-6 flex-grow overflow-hidden" style="height:700px;min-height:700px;max-height:700px;">
+        <div class="flex space-x-6 flex-grow overflow-hidden" style="height:700px;min-height:700px;max-height:700px;">
             <!-- List Column -->
             <div style="width:420px;min-width:420px;max-width:600px;" class="border-r border-gray-700 pr-4 flex flex-col">
                 <div class="flex-shrink-0 flex justify-between items-center mb-4">
@@ -76,9 +60,7 @@
                         </button>
                     </div>
                 </div>
-                    <div id="item-list" class="space-y-2 overflow-y-auto flex-grow pr-2" style="width:400px;min-width:400px;max-width:400px;">
-                    <!-- Dynamic list of items -->
-                </div>
+                <div id="item-list" class="space-y-2 overflow-y-auto flex-grow pr-2" style="width:400px;min-width:400px;max-width:400px;"></div>
             </div>
             <!-- Editor Column -->
             <div id="editor-panel" class="flex-1 hidden flex-col">
@@ -100,15 +82,13 @@
                     </div>
                 </form>
             </div>
-             <div id="editor-placeholder" class="flex-1 flex items-center justify-center text-gray-500">
+            <div id="editor-placeholder" class="flex-1 flex items-center justify-center text-gray-500">
                 <p>Chọn một kịch bản để xem hoặc tạo kịch bản mới.</p>
             </div>
         </div>
     </main>
-
-    <!-- Delete Confirmation Modal -->
     <div id="delete-confirm-modal" class="hidden fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4">
-         <div class="bg-gray-700 rounded-lg shadow-xl p-8 w-full max-w-md">
+        <div class="bg-gray-700 rounded-lg shadow-xl p-8 w-full max-w-md">
             <h2 class="text-xl font-bold mb-4">Xác nhận xóa</h2>
             <p class="text-gray-300 mb-6">Bạn có chắc chắn muốn xóa kịch bản này không?</p>
             <div class="flex justify-end space-x-4">
@@ -117,219 +97,175 @@
             </div>
         </div>
     </div>
-
     <script>
-        // Nút quay lại trang chủ và nút đóng cửa sổ
-        document.addEventListener('DOMContentLoaded', function() {
-            // Nút Quay lại giờ là link, không cần JS
-            const closeMainBtn = document.getElementById('close-main-btn');
-            if (closeMainBtn) {
-                closeMainBtn.addEventListener('click', function() {
-                    // Navigate to homepage instead of history.back() to avoid returning to old pages
-                    window.location.href = '/index.html';
-                });
-            }
-        });
     document.addEventListener('DOMContentLoaded', () => {
-            // Nút xóa bộ nhớ
-            const clearMemoryBtn = document.getElementById('clear-memory-btn');
-            if (clearMemoryBtn) {
-                clearMemoryBtn.addEventListener('click', function() {
-                    localStorage.removeItem('memory_mainScripts');
-                    scripts = [];
-                    clearEditorForm();
-                    showEditor(false);
-                    renderItemList();
-                });
-            }
-            try {
-            console.debug('bo-nho-scripts: DOMContentLoaded');
-            // --- Elements ---
-            const newItemBtn = document.getElementById('new-item-btn');
-            const itemList = document.getElementById('item-list');
-            const editorPanel = document.getElementById('editor-panel');
-            const editorPlaceholder = document.getElementById('editor-placeholder');
-            const itemForm = document.getElementById('item-form');
-            const itemIdInput = document.getElementById('item-id');
-            const itemTitleInput = document.getElementById('item-title');
-            const itemContentInput = document.getElementById('item-content');
-            // copyItemBtn sẽ được khai báo ở dưới khi thêm event
-            const deleteConfirmModal = document.getElementById('delete-confirm-modal');
-            const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
-            const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
+        // --- Elements ---
+        const newItemBtn = document.getElementById('new-item-btn');
+        const itemList = document.getElementById('item-list');
+        const editorPanel = document.getElementById('editor-panel');
+        const editorPlaceholder = document.getElementById('editor-placeholder');
+        const itemForm = document.getElementById('item-form');
+        const itemIdInput = document.getElementById('item-id');
+        const itemTitleInput = document.getElementById('item-title');
+        const itemContentInput = document.getElementById('item-content');
+        const deleteConfirmModal = document.getElementById('delete-confirm-modal');
+        const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
+        const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
+        const editItemBtn = document.getElementById('edit-item-btn');
+        const copyItemBtn = document.getElementById('copy-item-btn');
+        const exportTxtBtn = document.getElementById('export-txt-btn');
+        const deleteAllBtn = document.getElementById('delete-all-btn');
 
-            // NOTE: delete modal handlers will be attached after the functions are defined
+        // --- Data ---
+        let scripts = JSON.parse(localStorage.getItem('memory_mainScripts')) || [];
+        let itemIdToDelete = null;
 
-            // --- Data ---
-            let scripts = JSON.parse(localStorage.getItem('memory_mainScripts')) || [];
-            let itemIdToDelete = null;
+        // --- Functions ---
+        const saveData = () => {
+            localStorage.setItem('memory_mainScripts', JSON.stringify(scripts));
+        };
 
-            // --- Functions ---
-            const saveData = () => {
-                localStorage.setItem('memory_mainScripts', JSON.stringify(scripts));
-            };
-
-            const renderItemList = () => {
-                itemList.innerHTML = '';
-                const currentId = itemIdInput.value;
-                scripts.forEach(item => {
-                    const div = document.createElement('div');
-                    div.className = `w-full text-left pl-5 pr-3 py-1 rounded-md transition-colors item cursor-pointer ${item.id == currentId ? 'active' : 'hover:bg-gray-700'}`;
-                    div.dataset.id = item.id;
-                    div.innerHTML = `
-                        <span class="pointer-events-none text-base break-words whitespace-normal">${item.title}</span>
-                        <button class="delete-btn text-gray-400 hover:text-red-500 p-2 rounded-full" data-id="${item.id}">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm4 0a1 1 0 012 0v6a1 1 0 11-2 0V8z" clip-rule="evenodd" />
-                            </svg>
-                        </button>
-                    `;
-                    itemList.appendChild(div);
-                });
-            };
-
-            const showEditor = (show) => {
-                editorPanel.classList.toggle('hidden', !show);
-                editorPlaceholder.classList.toggle('hidden', show);
-            };
-
-            const clearEditorForm = () => {
-                itemForm.reset();
-                itemIdInput.value = '';
-            };
-            
-            const loadItemIntoForm = (id) => {
-                const item = scripts.find(p => p.id == id);
-                if (item) {
-                    itemIdInput.value = item.id;
-                    itemTitleInput.value = item.title;
-                    itemContentInput.value = item.content;
-                    showEditor(true);
-                }
-                renderItemList();
-            };
-
-            const openDeleteModal = (id) => {
-                itemIdToDelete = id;
-                deleteConfirmModal.classList.remove('hidden');
-            };
-
-            const closeDeleteModal = () => {
-                itemIdToDelete = null;
-                deleteConfirmModal.classList.add('hidden');
-            };
-
-            const performDelete = () => {
-                if (!itemIdToDelete) return;
-                scripts = scripts.filter(p => p.id != itemIdToDelete);
-                saveData();
-                if (itemIdInput.value == itemIdToDelete) {
-                     clearEditorForm();
-                     showEditor(false);
-                }
-                renderItemList();
-                closeDeleteModal();
-            };
-
-            // Attach delete modal handlers (functions are now defined)
-            if (confirmDeleteBtn) confirmDeleteBtn.onclick = performDelete;
-            if (cancelDeleteBtn) cancelDeleteBtn.onclick = closeDeleteModal;
-
-            // --- Event Listeners ---
-            if (newItemBtn) {
-                newItemBtn.addEventListener('click', () => {
-                    console.debug('bo-nho-scripts: newItemBtn clicked');
-                    clearEditorForm();
-                    editorPanel.classList.remove('hidden');
-                    editorPlaceholder.classList.add('hidden');
-                    itemTitleInput.focus();
-                });
-            } else {
-                console.error('bo-nho-scripts: newItemBtn not found');
-            }
-
-            itemList.addEventListener('click', (e) => {
-                const deleteBtn = e.target.closest('.delete-btn');
-                const itemDiv = e.target.closest('.item');
-                if (deleteBtn) {
-                    openDeleteModal(deleteBtn.dataset.id);
-                } else if (itemDiv) {
-                    loadItemIntoForm(itemDiv.dataset.id);
-                }
+        const renderItemList = () => {
+            itemList.innerHTML = '';
+            const currentId = itemIdInput.value;
+            scripts.forEach(item => {
+                const div = document.createElement('div');
+                div.className = `w-full text-left pl-5 pr-3 py-1 rounded-md transition-colors script-item cursor-pointer ${item.id == currentId ? 'active' : 'hover:bg-gray-700'}`;
+                div.dataset.id = item.id;
+                div.innerHTML = `
+                    <span class="truncate pointer-events-none text-base break-words whitespace-normal">${item.title}</span>
+                    <button class="delete-btn text-gray-400 hover:text-red-500 p-2 rounded-full" data-id="${item.id}">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm4 0a1 1 0 012 0v6a1 1 0 11-2 0V8z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                `;
+                itemList.appendChild(div);
             });
+        };
 
-            itemForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                const id = itemIdInput.value;
-                const title = itemTitleInput.value.trim();
-                const content = itemContentInput.value.trim();
-                
-                if (id) { // Update existing
-                    const index = scripts.findIndex(p => p.id == id);
-                    if (index > -1) scripts[index] = { ...scripts[index], title, content };
-                } else { // Create new
-                    const newItem = { id: Date.now(), title, content };
-                    scripts.push(newItem);
-                    itemIdInput.value = newItem.id;
-                }
-                saveData();
-                renderItemList();
-            });
+        const showEditor = (show) => {
+            editorPanel.classList.toggle('hidden', !show);
+            editorPlaceholder.classList.toggle('hidden', show);
+        };
 
+        const clearEditorForm = () => {
+            itemForm.reset();
+            itemIdInput.value = '';
+        };
 
-            // Nút chỉnh sửa
-            const editItemBtn = document.getElementById('edit-item-btn');
-            editItemBtn.addEventListener('click', () => {
-                itemTitleInput.readOnly = false;
-                itemContentInput.readOnly = false;
+        const loadItemIntoForm = (id) => {
+            const item = scripts.find(p => p.id == id);
+            if (item) {
+                itemIdInput.value = item.id;
+                itemTitleInput.value = item.title;
+                itemContentInput.value = item.content;
+                showEditor(true);
+            }
+            renderItemList();
+        };
+
+        const openDeleteModal = (id) => {
+            itemIdToDelete = id;
+            deleteConfirmModal.classList.remove('hidden');
+        };
+
+        const closeDeleteModal = () => {
+            itemIdToDelete = null;
+            deleteConfirmModal.classList.add('hidden');
+        };
+
+        const performDelete = () => {
+            if (!itemIdToDelete) return;
+            scripts = scripts.filter(p => p.id != itemIdToDelete);
+            saveData();
+            if (itemIdInput.value == itemIdToDelete) {
+                clearEditorForm();
+                showEditor(false);
+            }
+            renderItemList();
+            closeDeleteModal();
+        };
+
+        // --- Event Listeners ---
+        if (newItemBtn) {
+            newItemBtn.addEventListener('click', () => {
+                clearEditorForm();
+                editorPanel.classList.remove('hidden');
+                editorPlaceholder.classList.add('hidden');
                 itemTitleInput.focus();
             });
+        }
 
-            // Nút copy
-            const copyItemBtn = document.getElementById('copy-item-btn');
-            copyItemBtn.addEventListener('click', () => {
-                const contentToCopy = itemContentInput.value;
-                if (!contentToCopy) {
-                    return;
-                }
-                navigator.clipboard.writeText(contentToCopy);
-            });
-
-            // Nút xuất TXT
-            const exportTxtBtn = document.getElementById('export-txt-btn');
-            exportTxtBtn.addEventListener('click', () => {
-                const title = itemTitleInput.value.trim();
-                const content = itemContentInput.value.trim();
-                if (!title && !content) return alert('Không có nội dung để xuất.');
-                const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
-                const url = URL.createObjectURL(blob);
-                const link = document.createElement('a');
-                link.href = url;
-                link.download = `${title || 'untitled'}.txt`;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                URL.revokeObjectURL(url);
-            });
-
-            // Nút xóa tất cả
-            const deleteAllBtn = document.getElementById('delete-all-btn');
-            deleteAllBtn.addEventListener('click', () => {
-                if (confirm('Bạn có chắc chắn muốn xóa tất cả kịch bản không?')) {
-                    scripts = [];
-                    saveData();
-                    clearEditorForm();
-                    showEditor(false);
-                }
-            });
-
-            // Initial Load
-            renderItemList();
-            showEditor(false);
-            } catch (err) {
-                console.error('bo-nho-scripts runtime error:', err);
+        itemList.addEventListener('click', (e) => {
+            const deleteBtn = e.target.closest('.delete-btn');
+            const itemDiv = e.target.closest('.script-item');
+            if (deleteBtn) {
+                openDeleteModal(deleteBtn.dataset.id);
+            } else if (itemDiv) {
+                loadItemIntoForm(itemDiv.dataset.id);
             }
         });
+
+        itemForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const id = itemIdInput.value;
+            const title = itemTitleInput.value.trim();
+            const content = itemContentInput.value.trim();
+            if (id) {
+                const index = scripts.findIndex(p => p.id == id);
+                if (index > -1) scripts[index] = { ...scripts[index], title, content };
+            } else {
+                const newItem = { id: Date.now(), title, content };
+                scripts.push(newItem);
+                itemIdInput.value = newItem.id;
+            }
+            saveData();
+            renderItemList();
+        });
+
+        editItemBtn.addEventListener('click', () => {
+            itemTitleInput.readOnly = false;
+            itemContentInput.readOnly = false;
+            itemTitleInput.focus();
+        });
+
+        copyItemBtn.addEventListener('click', () => {
+            const contentToCopy = itemContentInput.value;
+            if (!contentToCopy) return;
+            navigator.clipboard.writeText(contentToCopy);
+        });
+
+        exportTxtBtn.addEventListener('click', () => {
+            const title = itemTitleInput.value.trim();
+            const content = itemContentInput.value.trim();
+            if (!title && !content) return;
+            const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `${title || 'untitled'}.txt`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        });
+
+        deleteAllBtn.addEventListener('click', () => {
+            scripts = [];
+            saveData();
+            clearEditorForm();
+            showEditor(false);
+            renderItemList();
+        });
+
+        cancelDeleteBtn.addEventListener('click', closeDeleteModal);
+        confirmDeleteBtn.addEventListener('click', performDelete);
+
+        // Initial Load
+        renderItemList();
+        showEditor(false);
+    });
     </script>
 </body>
 </html>
