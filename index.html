@@ -750,6 +750,62 @@
                 memoryEditBtn.classList.toggle('hidden', !canEdit || state.isEditingMemory);
                 memoryCopyBtn.classList.toggle('hidden', !hasContent);
                 memoryExportBtn.classList.toggle('hidden', !hasContent);
+                // Đưa các nút vào một hàng ngang phía dưới ô nội dung
+                let btnRow = document.getElementById('memory-btn-row');
+                if (!btnRow) {
+                    btnRow = document.createElement('div');
+                    btnRow.id = 'memory-btn-row';
+                    btnRow.className = 'flex space-x-2 mt-4 justify-end';
+                    memoryModalContentInput.parentNode.appendChild(btnRow);
+                }
+                btnRow.innerHTML = '';
+                // Chỉnh sửa
+                if (!memoryEditBtn.classList.contains('hidden')) {
+                    btnRow.appendChild(memoryEditBtn);
+                }
+                // Copy
+                if (!memoryCopyBtn.classList.contains('hidden')) {
+                    btnRow.appendChild(memoryCopyBtn);
+                }
+                // Xuất TXT
+                if (!memoryExportBtn.classList.contains('hidden')) {
+                    btnRow.appendChild(memoryExportBtn);
+                }
+                // Nếu là Nhân vật, thêm nút tạo ảnh
+                let createImageBtn = document.getElementById('create-character-image-btn');
+                if (state.currentMemoryType === 'characters' && hasContent) {
+                    if (!createImageBtn) {
+                        createImageBtn = document.createElement('button');
+                        createImageBtn.id = 'create-character-image-btn';
+                        createImageBtn.className = 'bg-purple-600 hover:bg-purple-700 text-white font-bold px-4 py-2 rounded';
+                        createImageBtn.textContent = 'Tạo ảnh';
+                        createImageBtn.onclick = async function() {
+                            createImageBtn.disabled = true;
+                            createImageBtn.textContent = 'Đang tạo...';
+                            const prompt = memoryModalContentInput.value;
+                            try {
+                                const imgUrl = await generateAiImage(prompt);
+                                let img = document.getElementById('character-image-preview');
+                                if (!img) {
+                                    img = document.createElement('img');
+                                    img.id = 'character-image-preview';
+                                    img.className = 'w-full mt-2 rounded shadow';
+                                    btnRow.parentNode.appendChild(img);
+                                }
+                                img.src = imgUrl;
+                            } catch (e) {
+                                showToast('Tạo ảnh thất bại!', 'error');
+                            }
+                            createImageBtn.disabled = false;
+                            createImageBtn.textContent = 'Tạo ảnh';
+                        };
+                    }
+                    btnRow.appendChild(createImageBtn);
+                } else {
+                    if (createImageBtn) createImageBtn.remove();
+                    let characterImagePreview = document.getElementById('character-image-preview');
+                    if (characterImagePreview) characterImagePreview.remove();
+                }
             }
 
             function openMemoryModal(type) {
