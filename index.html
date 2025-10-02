@@ -185,6 +185,7 @@
         <div class="flex-grow flex flex-col space-y-4 overflow-y-auto">
         <div class="flex-grow flex flex-col overflow-y-auto">
             <ul class="space-y-2">
+                <li><a href="https://anai2025.github.io/homepage/" title="Trang chủ" class="w-full flex justify-center items-center p-2 space-x-2 rounded-full bg-blue-600 hover:bg-blue-800 transition-colors duration-200 shadow-lg"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7m-9 2v6m4-6v6m5 0a2 2 0 01-2 2H7a2 2 0 01-2-2v-7a2 2 0 012-2h3" /></svg><span class="sidebar-text text-sm text-white font-semibold">Trang chủ</span></a></li>
                 <li><button id="api-key-btn" title="Cài đặt" class="w-full flex justify-center items-center p-2 space-x-2 rounded-full hover:bg-gray-700"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-1.57 1.996A1.532 1.532 0 013.17 8.51c-1.56.38-1.56 2.6 0 2.98a1.532 1.532 0 01.948 2.286c-.836 1.372.734 2.942 1.996 1.57A1.532 1.532 0 018.51 16.83c.38 1.56 2.6 1.56 2.98 0a1.532 1.532 0 012.286-.948c1.372.836 2.942-.734-1.57-1.996A1.532 1.532 0 0116.83 11.49c1.56-.38-1.56-2.6 0-2.98a1.532 1.532 0 01-.948-2.286c.836-1.372-.734-2.942-1.996-1.57A1.532 1.532 0 0111.49 3.17zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" /></svg><span class="sidebar-text text-sm">Cài đặt</span></button></li>
             </ul>
             <!-- Main Actions moved to horizontal bar -->
@@ -221,8 +222,8 @@
                  <div class="border-t border-gray-700 my-2"></div>
                  <!-- Cụm P2S, S2Se, Prompt Studio với nền xanh lá -->
                  <div class="sidebar-group-green">
-                    <li><a href="#" id="create-script-btn" title="Idea to Script" class="w-full flex justify-center items-center p-2 space-x-2 rounded-full"><span class="font-bold w-7 h-7 flex items-center justify-center sidebar-icon-green" style="font-size:0.95rem;">I2S</span><span class="sidebar-text text-sm">Idea to Script</span></a></li>
-                    <li><a href="https://anproduction2025.github.io/ancontents/S2Se" title="S2Se (Script to Section)" class="w-full flex justify-center items-center p-2 space-x-2 rounded-full"><span class="font-bold w-7 h-7 flex items-center justify-center sidebar-icon-green" style="font-size:0.95rem;">S2Se</span><span class="sidebar-text text-sm">S2Se</span></a></li>
+                    <li><button id="create-script-btn" title="Idea to Script" class="w-full flex justify-center items-center p-2 space-x-2 rounded-full"><span class="font-bold w-7 h-7 flex items-center justify-center sidebar-icon-green" style="font-size:0.95rem;">I2S</span><span class="sidebar-text text-sm">Idea to Script</span></button></li>
+                    <li><a href="./S2Se/index.html" title="S2Se (Script to Section)" class="w-full flex justify-center items-center p-2 space-x-2 rounded-full"><span class="font-bold w-7 h-7 flex items-center justify-center sidebar-icon-green" style="font-size:0.95rem;">S2Se</span><span class="sidebar-text text-sm">S2Se</span></a></li>
                     <li><a href="/ancontents/Prompts-Studio/" title="Prompt Studio" class="w-full flex justify-center items-center p-2 space-x-2 rounded-full"><span class="font-bold w-7 h-7 flex items-center justify-center sidebar-icon-green" style="font-size:0.95rem;">Ps</span><span class="sidebar-text text-sm">Prompt Studio</span></a></li>
                  </div>
                  <div class="border-t border-gray-700 my-2"></div>
@@ -319,6 +320,22 @@
     <!-- Generic Memory Modal -->
     <div id="memory-modal-container" class="modal-overlay hidden fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
         <div class="bg-gray-800 p-6 rounded-lg relative w-full max-w-[95vw] h-[95vh] flex flex-col shadow-2xl">
+            <!-- Bố cục ưu tiên -->
+            <div class="mb-6 p-4 bg-gray-700 rounded-lg">
+                <h3 class="text-lg font-bold mb-2 text-yellow-400">Bố cục ưu tiên</h3>
+                <ul class="list-disc pl-6 space-y-1 text-white">
+                    <li>Rule of Thirds</li>
+                    <li>Centered</li>
+                    <li>Symmetry</li>
+                    <li>Golden Ratio</li>
+                    <li>Leading Lines</li>
+                    <li>Foreground Interest</li>
+                    <li>Depth</li>
+                    <li>Negative Space</li>
+                    <li>Frame within a Frame</li>
+                    <li>Diagonal Composition</li>
+                </ul>
+            </div>
             <button class="close-modal-btn absolute top-4 right-4 text-gray-400 hover:text-white"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg></button>
             <h2 id="memory-modal-title" class="text-2xl font-bold mb-6 flex-shrink-0">Bộ nhớ</h2>
             <div class="flex space-x-6 flex-grow overflow-hidden">
@@ -942,9 +959,7 @@
             // --- Event Listeners Setup ---
             if (resetMemoryBtn) {
                 resetMemoryBtn.addEventListener('click', () => {
-                    if (confirm('Bạn có chắc chắn muốn đặt lại toàn bộ bộ nhớ? Tất cả dữ liệu sẽ bị xóa và không thể khôi phục.')) {
-                        resetAllMemory();
-                    }
+                    location.reload(); // Chỉ làm mới giao diện, không ảnh hưởng bộ nhớ
                 });
             }
             
@@ -1261,37 +1276,10 @@ Hãy đảm bảo bạn tuân thủ đúng định dạng JSON đã yêu cầu.`
                             <div class="flex justify-between items-center pt-2 flex-shrink-0">
                                 <div>
                                     ${isScript 
-                                        ? `<a href="/S2Se/index.html" id="auto-s2se-btn" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-3 text-sm rounded-md">Chuyển sang S2Se</a>`
-// Sự kiện chuyển nội dung sang S2Se
-document.addEventListener('DOMContentLoaded', function() {
-    document.body.addEventListener('click', function(e) {
-        if (e.target && e.target.id === 'auto-s2se-btn') {
-            e.preventDefault();
-            var content = document.getElementById('script-result-content')?.value;
-            if (content) localStorage.setItem('scriptToProcess', content);
-            window.location.href = '/S2Se/index.html';
-        }
-    });
-});
-document.body.addEventListener('click', function(e) {
-    if (e.target && e.target.id === 'auto-s2se-btn') {
-        e.preventDefault();
-        var content = document.getElementById('script-result-content')?.value;
-        if (content) localStorage.setItem('scriptToProcess', content);
-        window.location.href = '/S2Se/index.html';
-    }
-});
+                                        ? `<a href="https://anproduction2025.github.io/ancontents/S2Se" class="nav-link-dynamic bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-3 text-sm rounded-md">Chuyển sang S2Se</a>`
                                         : `<a href="#" class="nav-link-dynamic bg-teal-600 hover:bg-teal-500 text-white font-bold py-1 px-3 text-sm rounded-md">Tạo Voice TTS</a>`
                                     }
                                 </div>
-document.body.addEventListener('click', function(e) {
-    if (e.target && e.target.id === 'auto-s2se-btn') {
-        e.preventDefault();
-        var content = document.getElementById('script-result-content')?.value;
-        if (content) localStorage.setItem('scriptToProcess', content);
-        window.location.href = '/S2Se/index.html';
-    }
-});
                                 <div class="flex space-x-2">
                                     <button data-type="${type}" class="translate-btn bg-yellow-600 hover:bg-yellow-700 text-gray-900 font-bold py-1 px-3 text-sm rounded-md">Dịch</button>
                                     <button data-target="${type}-result-content" class="copy-btn bg-green-600 hover:bg-green-700 text-white font-bold py-1 px-3 text-sm rounded-md">Copy</button>
@@ -1568,18 +1556,23 @@ document.body.addEventListener('click', function(e) {
                 if (navLink) {
                      if (navLink.classList.contains('nav-link-dynamic') || navLink.closest('aside')) {
                         e.preventDefault();
-                        // Không đóng cửa sổ khi chuyển trang hoặc nhấn nút khác
-                        // Chỉ thực hiện lưu dữ liệu nếu cần
+                        saveUnsavedWindowsToTrash();
+
+                        localStorage.removeItem('scriptToProcess');
+                        localStorage.removeItem('promptStudioInput');
+                        localStorage.removeItem('textToVoice');
+
                         if (navLink.classList.contains('nav-link-dynamic')) {
                             if (navLink.href.includes('S2Se')) {
                                 const content = document.getElementById('script-result-content')?.value;
                                 if (content) localStorage.setItem('scriptToProcess', content);
                             }
-                            if (navLink.href.includes('text-to-voice')) {
+                             if (navLink.href.includes('text-to-voice')) { // Assuming this is the correct logic now
                                 const content = document.getElementById('vo-result-content')?.value;
                                 if (content) localStorage.setItem('textToVoice', content);
                             }
                         }
+                        
                         window.location.href = navLink.href;
                     }
                 }
