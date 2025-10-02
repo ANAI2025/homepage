@@ -943,9 +943,7 @@
             // --- Event Listeners Setup ---
             if (resetMemoryBtn) {
                 resetMemoryBtn.addEventListener('click', () => {
-                    if (confirm('Bạn có chắc chắn muốn đặt lại toàn bộ bộ nhớ? Tất cả dữ liệu sẽ bị xóa và không thể khôi phục.')) {
-                        resetAllMemory();
-                    }
+                    location.reload(); // Chỉ làm mới giao diện, không ảnh hưởng bộ nhớ
                 });
             }
             
