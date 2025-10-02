@@ -1554,25 +1554,20 @@ Hãy đảm bảo bạn tuân thủ đúng định dạng JSON đã yêu cầu.`
                 }
 
                 if (navLink) {
-                     if (navLink.classList.contains('nav-link-dynamic') || navLink.closest('aside')) {
+                    if (navLink.classList.contains('nav-link-dynamic') || navLink.closest('aside')) {
                         e.preventDefault();
-                        saveUnsavedWindowsToTrash();
-
-                        localStorage.removeItem('scriptToProcess');
-                        localStorage.removeItem('promptStudioInput');
-                        localStorage.removeItem('textToVoice');
-
+                        // Do NOT close or hide script/VO windows automatically
+                        // Only transfer data if needed, but keep windows open
                         if (navLink.classList.contains('nav-link-dynamic')) {
                             if (navLink.href.includes('S2Se')) {
                                 const content = document.getElementById('script-result-content')?.value;
                                 if (content) localStorage.setItem('scriptToProcess', content);
                             }
-                             if (navLink.href.includes('text-to-voice')) { // Assuming this is the correct logic now
+                            if (navLink.href.includes('text-to-voice')) {
                                 const content = document.getElementById('vo-result-content')?.value;
                                 if (content) localStorage.setItem('textToVoice', content);
                             }
                         }
-                        
                         window.location.href = navLink.href;
                     }
                 }
