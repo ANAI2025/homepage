@@ -506,16 +506,16 @@
             };
 
             const state = {
-                script: JSON.parse(localStorage.getItem(memoryConfig.script.storageKey)) || [],
-                prompt: JSON.parse(localStorage.getItem(memoryConfig.prompt.storageKey)) || [],
-                voiceOver: JSON.parse(localStorage.getItem(memoryConfig.voiceOver.storageKey)) || [],
-                mainScripts: JSON.parse(localStorage.getItem(memoryConfig.mainScripts.storageKey)) || [],
-                sections: JSON.parse(localStorage.getItem(memoryConfig.sections.storageKey)) || [],
-                scenes: JSON.parse(localStorage.getItem(memoryConfig.scenes.storageKey)) || [],
-                characters: JSON.parse(localStorage.getItem(memoryConfig.characters.storageKey)) || [],
-                mainPrompts: JSON.parse(localStorage.getItem(memoryConfig.mainPrompts.storageKey)) || [],
-                mainVoiceOvers: JSON.parse(localStorage.getItem(memoryConfig.mainVoiceOvers.storageKey)) || [],
-                trash: JSON.parse(localStorage.getItem(memoryConfig.trash.storageKey)) || [],
+                script: JSON.parse(localStorage.getItem('input_scripts')) || [],
+                prompt: JSON.parse(localStorage.getItem('input_prompts')) || [],
+                voiceOver: JSON.parse(localStorage.getItem('input_voiceOvers')) || [],
+                mainScripts: JSON.parse(localStorage.getItem('memory_mainScripts')) || [],
+                sections: JSON.parse(localStorage.getItem('memory_sections')) || [],
+                scenes: JSON.parse(localStorage.getItem('memory_scenes')) || [],
+                characters: JSON.parse(localStorage.getItem('memory_characters')) || [],
+                mainPrompts: JSON.parse(localStorage.getItem('memory_mainPrompts')) || [],
+                mainVoiceOvers: JSON.parse(localStorage.getItem('memory_mainVoiceOvers')) || [],
+                trash: JSON.parse(localStorage.getItem('memory_trash')) || [],
                 settings: {
                     apiKey: localStorage.getItem('apiKey') || '',
                     aiModel: localStorage.getItem('aiModel') || 'gemini-2.5-flash-preview-05-20'
