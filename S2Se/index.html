@@ -1121,4 +1121,14 @@
         });
     </script>
 </body>
+<script>
+window.addEventListener('DOMContentLoaded', function() {
+    var script = localStorage.getItem('scriptToProcess');
+    if (script) {
+        var textarea = document.getElementById('source-script-content');
+        if (textarea) textarea.value = script;
+        localStorage.removeItem('scriptToProcess');
+    }
+});
+</script>
 </html>
