@@ -134,13 +134,8 @@
             }
         });
         document.addEventListener('DOMContentLoaded', () => {
-            // Đảm bảo nút xác nhận xóa hoạt động
-            if (confirmDeleteBtn) {
-                confirmDeleteBtn.onclick = performDelete;
-            }
-            if (cancelDeleteBtn) {
-                cancelDeleteBtn.onclick = closeDeleteModal;
-            }
+            try {
+            console.debug('bo-nho-scripts: DOMContentLoaded');
             // --- Elements ---
             const newItemBtn = document.getElementById('new-item-btn');
             const itemList = document.getElementById('item-list');
@@ -154,6 +149,8 @@
             const deleteConfirmModal = document.getElementById('delete-confirm-modal');
             const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
             const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
+
+            // NOTE: delete modal handlers will be attached after the functions are defined
 
             // --- Data ---
             let scripts = JSON.parse(localStorage.getItem('memory_mainScripts')) || [];
@@ -191,7 +188,6 @@
             const clearEditorForm = () => {
                 itemForm.reset();
                 itemIdInput.value = '';
-                renderItemList();
             };
             
             const loadItemIntoForm = (id) => {
@@ -227,12 +223,22 @@
                 closeDeleteModal();
             };
 
+            // Attach delete modal handlers (functions are now defined)
+            if (confirmDeleteBtn) confirmDeleteBtn.onclick = performDelete;
+            if (cancelDeleteBtn) cancelDeleteBtn.onclick = closeDeleteModal;
+
             // --- Event Listeners ---
-            newItemBtn.addEventListener('click', () => {
-                clearEditorForm();
-                showEditor(true);
-                itemTitleInput.focus();
-            });
+            if (newItemBtn) {
+                newItemBtn.addEventListener('click', () => {
+                    console.debug('bo-nho-scripts: newItemBtn clicked');
+                    clearEditorForm();
+                    editorPanel.classList.remove('hidden');
+                    editorPlaceholder.classList.add('hidden');
+                    itemTitleInput.focus();
+                });
+            } else {
+                console.error('bo-nho-scripts: newItemBtn not found');
+            }
 
             itemList.addEventListener('click', (e) => {
                 const deleteBtn = e.target.closest('.delete-btn');
@@ -312,6 +318,9 @@
             // Initial Load
             renderItemList();
             showEditor(false);
+            } catch (err) {
+                console.error('bo-nho-scripts runtime error:', err);
+            }
         });
     </script>
 </body>
