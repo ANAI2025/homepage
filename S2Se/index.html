@@ -711,9 +711,24 @@
                 memoryModalList.innerHTML = '';
                 [...data].sort((a, b) => b.id - a.id).forEach(item => {
                     const div = document.createElement('div');
-                    div.className = `w-full text-left p-3 rounded-md transition-colors script-item cursor-pointer hover:bg-gray-700`;
+                    div.className = `w-full text-left p-3 rounded-md transition-colors script-item cursor-pointer ${item.id == memoryModalIdInput.value ? 'active' : 'hover:bg-gray-700'}`;
                     div.dataset.id = item.id;
-                    div.innerHTML = `<div class="flex-grow overflow-hidden pr-2"><span class="truncate pointer-events-none">${item.title}</span></div><button class="delete-btn text-gray-400 hover:text-red-500 p-1 rounded-full flex-shrink-0" data-id="${item.id}"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 pointer-events-none" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm4 0a1 1 0 012 0v6a1 1 0 11-2 0V8z" clip-rule="evenodd" /></svg></button>`;
+                    div.innerHTML = `
+                        <div class="flex-grow overflow-hidden pr-2">
+                           <span class="truncate pointer-events-none">${item.title}</span>
+                        </div>
+                        <button class="edit-btn text-blue-400 hover:text-blue-600 p-1 rounded-full flex-shrink-0" data-id="${item.id}">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 pointer-events-none" viewBox="0 0 20 20" fill="currentColor"><path d="M17.414 2.586a2 2 0 00-2.828 0l-10 10A2 2 0 004 15.414V18a2 2 0 002 2h2.586a2 2 0 001.414-.586l10-10a2 2 0 000-2.828l-2-2z" /></svg>
+                        </button>
+                        <button class="copy-btn text-green-400 hover:text-green-600 p-1 rounded-full flex-shrink-0" data-id="${item.id}">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 pointer-events-none" viewBox="0 0 20 20" fill="currentColor"><path d="M8 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V4a2 2 0 00-2-2H8zm0 2h8v12H8V4z" /><path d="M4 6a2 2 0 012-2h8a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V6z" /></svg>
+                        </button>
+                        <button class="export-btn text-yellow-400 hover:text-yellow-600 p-1 rounded-full flex-shrink-0" data-id="${item.id}">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 pointer-events-none" viewBox="0 0 20 20" fill="currentColor"><path d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 0v12h8V4H6z" /></svg>
+                        </button>
+                        <button class="delete-btn text-gray-400 hover:text-red-500 p-1 rounded-full flex-shrink-0" data-id="${item.id}">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 pointer-events-none" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm4 0a1 1 0 012 0v6a1 1 0 11-2 0V8z" clip-rule="evenodd" /></svg>
+                        </button>`;
                     memoryModalList.appendChild(div);
                 });
             }
@@ -811,6 +826,43 @@
                     openMemoryModal(memoryBtn.dataset.type);
                 }
                 if (e.target.closest('.close-modal-btn')) e.target.closest('.modal-overlay').classList.add('hidden');
+                // Chức năng chỉnh sửa, sao chép, xuất file
+                const editBtn = e.target.closest('.edit-btn');
+                const copyBtn = e.target.closest('.copy-btn');
+                const exportBtn = e.target.closest('.export-btn');
+                if (editBtn) {
+                    const id = editBtn.dataset.id;
+                    loadItemIntoMemoryForm(id);
+                    state.isEditingMemory = true;
+                    memoryEditorPanel.classList.remove('hidden');
+                    updateMemoryEditorMode && updateMemoryEditorMode();
+                    memoryModalTitleInput.focus();
+                }
+                if (copyBtn) {
+                    const id = copyBtn.dataset.id;
+                    const type = state.currentMemoryType;
+                    const item = state[type]?.find(i => i.id == id);
+                    if (item && item.content) {
+                        navigator.clipboard.writeText(item.content).then(() => showToast('Đã sao chép vào clipboard!', 'success')).catch(() => showToast('Sao chép thất bại!', 'error'));
+                    }
+                }
+                if (exportBtn) {
+                    const id = exportBtn.dataset.id;
+                    const type = state.currentMemoryType;
+                    const item = state[type]?.find(i => i.id == id);
+                    if (item && item.content) {
+                        const blob = new Blob([item.content], { type: 'text/plain;charset=utf-8' });
+                        const url = URL.createObjectURL(blob);
+                        const link = document.createElement('a');
+                        const fileName = `${(item.title || 'untitled').toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '_').substring(0, 50)}.txt`;
+                        link.href = url;
+                        link.download = fileName;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        URL.revokeObjectURL(url);
+                    }
+                }
             });
 
             document.getElementById('api-key-btn').addEventListener('click', () => {
@@ -1098,7 +1150,6 @@
                          localStorage.removeItem('s2se_task_running');
                     }
                 }
- }
                 // Initial sidebar state
                 sidebar.classList.add('w-20');
                 sidebar.classList.remove('w-64');
