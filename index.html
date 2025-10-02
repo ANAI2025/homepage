@@ -677,12 +677,15 @@
             }
 
             function updateMemoryCounters() {
+                // Lưu số đếm vào localStorage
+                const counters = {};
                 Object.keys(memoryConfig).forEach(type => {
                     const button = document.querySelector(`.memory-btn[data-type="${type}"]`);
+                    const count = state[type]?.length || 0;
+                    counters[type] = count;
                     if (button) {
                         const countEl = button.querySelector('.memory-count');
-                         if (countEl) {
-                            const count = state[type]?.length || 0;
+                        if (countEl) {
                             if (count > 0) {
                                 countEl.textContent = count;
                                 countEl.classList.remove('hidden');
@@ -692,6 +695,24 @@
                         }
                     }
                 });
+                localStorage.setItem('anProduction_memoryCounters', JSON.stringify(counters));
+    // Khôi phục số đếm từ localStorage khi tải lại trang
+    const savedCounters = JSON.parse(localStorage.getItem('anProduction_memoryCounters') || '{}');
+    Object.keys(savedCounters).forEach(type => {
+        const button = document.querySelector(`.memory-btn[data-type="${type}"]`);
+        if (button) {
+            const countEl = button.querySelector('.memory-count');
+            if (countEl) {
+                const count = savedCounters[type];
+                if (count > 0) {
+                    countEl.textContent = count;
+                    countEl.classList.remove('hidden');
+                } else {
+                    countEl.classList.add('hidden');
+                }
+            }
+        }
+    });
             }
 
             // --- Generic Memory Management ---
