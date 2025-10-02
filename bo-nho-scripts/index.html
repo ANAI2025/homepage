@@ -260,7 +260,6 @@
                 }
                 saveData();
                 renderItemList();
-                alert('Đã lưu kịch bản!');
             });
 
 
@@ -277,12 +276,9 @@
             copyItemBtn.addEventListener('click', () => {
                 const contentToCopy = itemContentInput.value;
                 if (!contentToCopy) {
-                    alert('Không có nội dung để sao chép.');
                     return;
                 }
-                navigator.clipboard.writeText(contentToCopy).then(() => {
-                    alert('Đã sao chép vào clipboard!');
-                }).catch(err => alert('Sao chép thất bại!'));
+                navigator.clipboard.writeText(contentToCopy);
             });
 
             // Nút xuất TXT
