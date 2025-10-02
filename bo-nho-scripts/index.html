@@ -134,6 +134,13 @@
             }
         });
         document.addEventListener('DOMContentLoaded', () => {
+            // Đảm bảo nút xác nhận xóa hoạt động
+            if (confirmDeleteBtn) {
+                confirmDeleteBtn.onclick = performDelete;
+            }
+            if (cancelDeleteBtn) {
+                cancelDeleteBtn.onclick = closeDeleteModal;
+            }
             // --- Elements ---
             const newItemBtn = document.getElementById('new-item-btn');
             const itemList = document.getElementById('item-list');
