@@ -417,12 +417,28 @@
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Sidebar: mở modal bộ nhớ/đầu vào khi nhấn nút
+            // Sidebar: chuyển hướng sang trang bộ nhớ khi nhấn nút
+            const memoryPageMap = {
+                mainScripts: './bo-nho-scripts/index.html',
+                sections: './bo-nho-sections/index.html',
+                mainPrompts: './bo-nho-prompts/index.html',
+                mainVoiceOvers: './bo-nho-voice/index.html',
+                scenes: './bo-nho-boicanh/index.html',
+                characters: './bo-nho-nhanvat/index.html',
+                trash: './bo-nho-rac/index.html',
+                script: './bo-nho-scripts/index.html',
+                prompt: './bo-nho-prompts/index.html',
+                voiceOver: './bo-nho-voice/index.html'
+            };
             document.querySelectorAll('.memory-btn').forEach(btn => {
                 btn.addEventListener('click', function(e) {
                     e.preventDefault();
                     const type = btn.getAttribute('data-type');
-                    openMemoryModal(type);
+                    if (memoryPageMap[type]) {
+                        window.location.href = memoryPageMap[type];
+                    } else {
+                        openMemoryModal(type);
+                    }
                 });
             });
             const createScriptBtn = document.getElementById('create-script-btn');
@@ -494,7 +510,7 @@
 
             const memoryConfig = {
                 // Inputs
-                script: { title: 'Đầu vào Ý tưởng', storageKey: 'input_scripts' },
+                script: { title: 'Đầu vào Ý tưởng', storageKey: 'memory_ideas' },
                 prompt: { title: 'Đầu vào Se', storageKey: 'input_prompts' },
                 voiceOver: { title: 'Đầu vào VO', storageKey: 'input_voiceOvers' },
                 // Saved Results
@@ -524,7 +540,7 @@
 
             const state = {
                 // All memories loaded from localStorage
-                script: JSON.parse(localStorage.getItem(memoryConfig.script.storageKey)) || [],
+                script: JSON.parse(localStorage.getItem('memory_ideas')) || [],
                 prompt: JSON.parse(localStorage.getItem(memoryConfig.prompt.storageKey)) || [],
                 voiceOver: JSON.parse(localStorage.getItem(memoryConfig.voiceOver.storageKey)) || [],
                 mainScripts: JSON.parse(localStorage.getItem(memoryConfig.mainScripts.storageKey)) || [],
@@ -710,8 +726,12 @@
             // --- Generic Memory Management ---
 
             function saveDataToStorage(type) {
-                const key = memoryConfig[type]?.storageKey;
-                if (key) localStorage.setItem(key, JSON.stringify(state[type]));
+                if(type === 'script') {
+                    localStorage.setItem('memory_ideas', JSON.stringify(state.script));
+                } else {
+                    const key = memoryConfig[type]?.storageKey;
+                    if (key) localStorage.setItem(key, JSON.stringify(state[type]));
+                }
                 updateMemoryCounters();
             }
 
