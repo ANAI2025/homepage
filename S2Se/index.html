@@ -928,6 +928,27 @@
                 }
                 saveDataToStorage(type);
                 renderMemoryList();
+                // Đưa các nút vào một hàng ngang cạnh nút Lưu
+                let btnRow = document.getElementById('memory-btn-row');
+                if (!btnRow) {
+                    btnRow = document.createElement('div');
+                    btnRow.id = 'memory-btn-row';
+                    btnRow.className = 'flex space-x-2 mt-4 justify-end';
+                    memoryModalForm.appendChild(btnRow);
+                }
+                btnRow.innerHTML = '';
+                // Chỉnh sửa
+                if (!memoryEditBtn.classList.contains('hidden')) {
+                    btnRow.appendChild(memoryEditBtn);
+                }
+                // Copy
+                if (!memoryCopyBtn.classList.contains('hidden')) {
+                    btnRow.appendChild(memoryCopyBtn);
+                }
+                // Xuất TXT
+                if (!memoryExportBtn.classList.contains('hidden')) {
+                    btnRow.appendChild(memoryExportBtn);
+                }
                 memoryEditorPanel.classList.add('hidden');
                 showToast('Đã lưu!', 'success');
             });
