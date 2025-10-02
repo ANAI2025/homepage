@@ -1109,6 +1109,31 @@
 </body>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Xử lý sự kiện cho các nút đầu vào/đầu ra sidebar
+    document.querySelectorAll('.memory-btn').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+            var type = btn.getAttribute('data-type');
+            var modalId = '';
+            switch(type) {
+                case 'script': modalId = 'modal-script'; break;
+                case 'prompt': modalId = 'modal-prompt'; break;
+                case 'voiceOver': modalId = 'modal-voiceover'; break;
+                case 'scenes': modalId = 'modal-scenes'; break;
+                case 'characters': modalId = 'modal-characters'; break;
+                case 'mainScripts': modalId = 'modal-mainScripts'; break;
+                case 'sections': modalId = 'modal-sections'; break;
+                case 'mainPrompts': modalId = 'modal-mainPrompts'; break;
+                case 'mainVoiceOvers': modalId = 'modal-mainVoiceOvers'; break;
+                case 'trash': modalId = 'modal-trash'; break;
+            }
+            if (modalId) {
+                var modal = document.getElementById(modalId);
+                if (modal) {
+                    modal.classList.remove('hidden');
+                }
+            }
+        });
+    });
     // Tự động lấy dữ liệu từ Bộ nhớ Sections cho dropdown
     try {
         var sections = JSON.parse(localStorage.getItem('sections') || '[]');
