@@ -417,6 +417,14 @@
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // Sidebar: mở modal bộ nhớ/đầu vào khi nhấn nút
+            document.querySelectorAll('.memory-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const type = btn.getAttribute('data-type');
+                    openMemoryModal(type);
+                });
+            });
             const createScriptBtn = document.getElementById('create-script-btn');
             const scriptFormContainer = document.getElementById('script-form-container');
             if (createScriptBtn && scriptFormContainer) {
