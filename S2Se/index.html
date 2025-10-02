@@ -1109,6 +1109,61 @@
 </body>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Hàm lấy dữ liệu bộ nhớ dùng chung
+    function getSharedMemory(type) {
+        switch(type) {
+            case 'script': return JSON.parse(localStorage.getItem('scripts') || '[]');
+            case 'prompt': return JSON.parse(localStorage.getItem('prompts') || '[]');
+            case 'voiceOver': return JSON.parse(localStorage.getItem('voiceOvers') || '[]');
+            case 'scenes': return JSON.parse(localStorage.getItem('scenes') || '[]');
+            case 'characters': return JSON.parse(localStorage.getItem('characters') || '[]');
+            case 'mainScripts': return JSON.parse(localStorage.getItem('scripts') || '[]');
+            case 'sections': return JSON.parse(localStorage.getItem('sections') || '[]');
+            case 'mainPrompts': return JSON.parse(localStorage.getItem('prompts') || '[]');
+            case 'mainVoiceOvers': return JSON.parse(localStorage.getItem('voiceOvers') || '[]');
+            case 'trash': return JSON.parse(localStorage.getItem('trash') || '[]');
+            default: return [];
+        }
+    }
+
+    // Khi mở modal, render danh sách bộ nhớ dùng chung
+    document.querySelectorAll('.memory-btn').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+            var type = btn.getAttribute('data-type');
+            var modal = document.getElementById('memory-modal-container');
+            var title = '';
+            switch(type) {
+                case 'script': title = 'Ý tưởng'; break;
+                case 'prompt': title = 'Section'; break;
+                case 'voiceOver': title = 'Voice Over'; break;
+                case 'scenes': title = 'Bối cảnh'; break;
+                case 'characters': title = 'Nhân vật'; break;
+                case 'mainScripts': title = 'Bộ nhớ Scripts'; break;
+                case 'sections': title = 'Bộ nhớ Sections'; break;
+                case 'mainPrompts': title = 'Bộ nhớ Prompts'; break;
+                case 'mainVoiceOvers': title = 'Bộ nhớ Voice Off'; break;
+                case 'trash': title = 'Bộ nhớ Rác'; break;
+            }
+            if (modal) {
+                modal.classList.remove('hidden');
+                var modalTitle = document.getElementById('memory-modal-title');
+                if (modalTitle) modalTitle.textContent = title || 'Bộ nhớ';
+                // Hiển thị danh sách bộ nhớ
+                var listCol = document.getElementById('memory-modal-list');
+                if (listCol) {
+                    var items = getSharedMemory(type);
+                    listCol.innerHTML = '';
+                    if (items.length === 0) {
+                        listCol.innerHTML = '<div class="text-gray-400">Chưa có dữ liệu.</div>';
+                    } else {
+                        items.forEach(function(item) {
+                            listCol.innerHTML += `<div class='script-item'><span>${item.title || item.name || 'Không tiêu đề'}</span></div>`;
+                        });
+                    }
+                }
+            }
+        });
+    });
     // Đóng modal khi nhấn nút X
     var closeBtns = document.querySelectorAll('.close-modal-btn');
     closeBtns.forEach(function(btn) {
