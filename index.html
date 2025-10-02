@@ -209,7 +209,9 @@
 
             <ul class="space-y-2">
                 <div class="sidebar-group-blue">
-                    <li><button data-type="mainScripts" title="Bộ nhớ Scripts" class="memory-btn relative w-full flex justify-center items-center p-2 space-x-2 rounded-full"><span class="text-sm font-bold w-5 text-center flex-shrink-0 sidebar-icon-blue">S</span><span class="sidebar-text text-sm">Scripts</span><span class="memory-count hidden ml-auto"></span></button></li>
+                    <li><button data-type="mainScripts" title="Bộ nhớ Scripts" class="memory-btn w-full flex justify-center items-center p-2 rounded-full bg-blue-500 hover:bg-blue-700 transition-colors duration-200 shadow-lg" style="margin-bottom: 4px; margin-top: 4px;">
+                        <span class="text-lg font-bold w-8 h-8 flex items-center justify-center rounded-full bg-blue-700 text-white">S</span>
+                    </button></li>
                     <li><button data-type="sections" title="Bộ nhớ Sections" class="memory-btn relative w-full flex justify-center items-center p-2 space-x-2 rounded-full"><span class="text-sm font-bold w-5 text-center flex-shrink-0 sidebar-icon-blue">Se</span><span class="sidebar-text text-sm">Sections</span><span class="memory-count hidden ml-auto"></span></button></li>
                     <li><button data-type="mainPrompts" title="Bộ nhớ Prompts" class="memory-btn relative w-full flex justify-center items-center p-2 space-x-2 rounded-full"><span class="text-sm font-bold w-5 text-center flex-shrink-0 sidebar-icon-blue">P</span><span class="sidebar-text text-sm">Prompts</span><span class="memory-count hidden ml-auto"></span></button></li>
                     <li><button data-type="mainVoiceOvers" title="Bộ nhớ Voice Off" class="memory-btn relative w-full flex justify-center items-center p-2 space-x-2 rounded-full"><span class="text-sm font-bold w-5 text-center flex-shrink-0 sidebar-icon-blue">VO</span><span class="sidebar-text text-sm">Voice Off</span><span class="memory-count hidden ml-auto"></span></button></li>
@@ -247,6 +249,8 @@
         <!-- Đã xóa thanh taskbar ngang trên cùng -->
         
         <main class="flex-grow p-8 flex space-x-8 overflow-x-auto relative">
+            <!-- Main Button for Scripts Memory -->
+            <!-- Đã xóa nút lớn Scripts, chuyển thành icon nhỏ trên sidebar-group-blue -->
             <!-- Initial Input Column -->
             <div id="script-form-container" class="workspace-column hidden w-[400px] flex-shrink-0 bg-gray-800 p-6 rounded-lg">
                 <!-- Đã xóa tiêu đề Nhập đầu vào -->
