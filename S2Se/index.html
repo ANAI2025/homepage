@@ -1109,6 +1109,14 @@
 </body>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Đóng modal khi nhấn nút X
+    var closeBtns = document.querySelectorAll('.close-modal-btn');
+    closeBtns.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var modal = btn.closest('.modal-overlay');
+            if (modal) modal.classList.add('hidden');
+        });
+    });
     // Xử lý sự kiện cho các nút đầu vào/đầu ra sidebar
     document.querySelectorAll('.memory-btn').forEach(function(btn) {
         btn.addEventListener('click', function(e) {
